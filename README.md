@@ -5,8 +5,9 @@ Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/Mouse
 
 The pipeline includes:
 
-- preprocessing: phase_shift, highpass filter, and 1. common median reference ("cmr") or 2. destriping (bad channel interpolation + highpass spatial filter - "destripe")
-- spike sorting: with pyKilosort
+- preprocessing: phase_shift, highpass filter, denoising (bad channel removal + common median reference ("cmr") or highpass spatial filter - "destripe"), and motion estimation (optionally correction)
+- spike sorting: with Kilosort2.5
 - postprocessing: remove duplicate units, compute amplitudes, spike/unit locations, PCA, correlograms, template similarity, template metrics, and quality metrics
 - curation: based on ISI violation ratio, presence ratio, and amplitude cutoff
+- unit classification based on pre-trained classifier (noise, MUA, SUA)
 - visualization: timeseries, drift maps, and sorting output in sortingview
