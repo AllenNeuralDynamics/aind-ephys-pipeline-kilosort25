@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:d74be6905569c88dedcbd572328bd01bbccac4245c0177aa4f3df06fbe93a567
+// hash:sha256:b538a6fb7e96b162ab61a3d2e9e003478acce8fefbcb42844b1144b476543145
 
 nextflow.enable.dsl = 1
 
@@ -128,7 +128,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 	tag 'capsule-5089190'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/44358dbf-921b-42d7-897d-9725eebd5ed8'
 
-	cpus 4
+	cpus 8
 	memory '64 GB'
 
 	input:
@@ -144,7 +144,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 	set -e
 
 	export CO_CAPSULE_ID=44358dbf-921b-42d7-897d-9725eebd5ed8
-	export CO_CPUS=4
+	export CO_CPUS=8
 	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
@@ -220,8 +220,8 @@ process capsule_aind_ephys_visualization_6 {
 	tag 'capsule-6668112'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/628c3c19-61bc-4f0c-80b2-00e81f83c176'
 
-	cpus 2
-	memory '16 GB'
+	cpus 8
+	memory '64 GB'
 
 	input:
 	path 'capsule/data/' from capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_visualization_6_8.collect()
@@ -240,8 +240,8 @@ process capsule_aind_ephys_visualization_6 {
 	set -e
 
 	export CO_CAPSULE_ID=628c3c19-61bc-4f0c-80b2-00e81f83c176
-	export CO_CPUS=2
-	export CO_MEMORY=17179869184
+	export CO_CPUS=8
+	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -361,7 +361,7 @@ process capsule_aind_ephys_results_collector_9 {
 	tag 'capsule-4820071'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5'
 
-	cpus 4
+	cpus 8
 	memory '64 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
@@ -385,7 +385,7 @@ process capsule_aind_ephys_results_collector_9 {
 	set -e
 
 	export CO_CAPSULE_ID=2fcf1c0b-df5d-4822-b078-9e1024a092c5
-	export CO_CPUS=4
+	export CO_CPUS=8
 	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
@@ -456,7 +456,7 @@ process capsule_nwb_packaging_units_11 {
 	tag 'capsule-7106853'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/9be90966-938b-4084-8959-4966e9dbb955'
 
-	cpus 4
+	cpus 8
 	memory '64 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
@@ -475,7 +475,7 @@ process capsule_nwb_packaging_units_11 {
 	set -e
 
 	export CO_CAPSULE_ID=9be90966-938b-4084-8959-4966e9dbb955
-	export CO_CPUS=4
+	export CO_CPUS=8
 	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
