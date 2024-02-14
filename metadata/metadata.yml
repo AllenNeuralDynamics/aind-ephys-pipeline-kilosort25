@@ -11,6 +11,7 @@ description: |-
   - curation: based on ISI violation ratio, presence ratio, and amplitude cutoff
   - unit classification based on pre-trained classifier (noise, MUA, SUA)
   - visualization: timeseries, drift maps, and sorting output in sortingview
+  - export session, subject, and units data to NWB
 authors:
 - name: AIND
 - name: Alessio Buccino
