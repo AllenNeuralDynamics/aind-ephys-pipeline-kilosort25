@@ -11,3 +11,4 @@ The pipeline includes:
 - curation: based on ISI violation ratio, presence ratio, and amplitude cutoff
 - unit classification based on pre-trained classifier (noise, MUA, SUA)
 - visualization: timeseries, drift maps, and sorting output in sortingview
+- export session, subject, and units data to NWB
