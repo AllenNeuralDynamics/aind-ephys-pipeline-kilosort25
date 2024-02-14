@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:df0bc827f008b849e1cb570bfbdbfab2b582cf0031d779c5fbcce1013e17f604
+// hash:sha256:d74be6905569c88dedcbd572328bd01bbccac4245c0177aa4f3df06fbe93a567
 
 nextflow.enable.dsl = 1
 
@@ -128,8 +128,8 @@ process capsule_aind_ephys_job_dispatch_4 {
 	tag 'capsule-5089190'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/44358dbf-921b-42d7-897d-9725eebd5ed8'
 
-	cpus 1
-	memory '8 GB'
+	cpus 4
+	memory '64 GB'
 
 	input:
 	path 'capsule/data/ecephys_session/' from ecephys_to_aind_ephys_job_dispatch_4.collect()
@@ -144,8 +144,8 @@ process capsule_aind_ephys_job_dispatch_4 {
 	set -e
 
 	export CO_CAPSULE_ID=44358dbf-921b-42d7-897d-9725eebd5ed8
-	export CO_CPUS=1
-	export CO_MEMORY=8589934592
+	export CO_CPUS=4
+	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -361,8 +361,8 @@ process capsule_aind_ephys_results_collector_9 {
 	tag 'capsule-4820071'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5'
 
-	cpus 1
-	memory '8 GB'
+	cpus 4
+	memory '64 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -385,8 +385,8 @@ process capsule_aind_ephys_results_collector_9 {
 	set -e
 
 	export CO_CAPSULE_ID=2fcf1c0b-df5d-4822-b078-9e1024a092c5
-	export CO_CPUS=1
-	export CO_MEMORY=8589934592
+	export CO_CPUS=4
+	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -438,7 +438,7 @@ process capsule_clone_nwb_packaging_subject_capsule_10 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-1992517.git" capsule-repo
-	git -C capsule-repo checkout 006d633fe95a54f8bfad1ed744b34ffa46f796f2 --quiet
+	git -C capsule-repo checkout 4a4f07a338d9b684f3473f4876a343ea8b05727f --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -456,8 +456,8 @@ process capsule_nwb_packaging_units_11 {
 	tag 'capsule-7106853'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/9be90966-938b-4084-8959-4966e9dbb955'
 
-	cpus 1
-	memory '8 GB'
+	cpus 4
+	memory '64 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -475,8 +475,8 @@ process capsule_nwb_packaging_units_11 {
 	set -e
 
 	export CO_CAPSULE_ID=9be90966-938b-4084-8959-4966e9dbb955
-	export CO_CPUS=1
-	export CO_MEMORY=8589934592
+	export CO_CPUS=4
+	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -485,7 +485,7 @@ process capsule_nwb_packaging_units_11 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-7106853.git" capsule-repo
-	git -C capsule-repo checkout 5ba45e81a3c600afa06eb8b38b489415bca9be33 --quiet
+	git -C capsule-repo checkout 55a39175d564e2084d25c2c166ee18fb3470b934 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
