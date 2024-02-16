@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:b538a6fb7e96b162ab61a3d2e9e003478acce8fefbcb42844b1144b476543145
+// hash:sha256:4fe55ec7f5e8dd3b6b840276ce8b8b633b8e0f35396b2d385c98a537d2258e40
 
 nextflow.enable.dsl = 1
 
@@ -27,10 +27,10 @@ capsule_aind_ephys_curation_2_to_capsule_aind_ephys_results_collector_9_19 = cha
 capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_results_collector_9_20 = channel.create()
 capsule_aind_ephys_visualization_6_to_capsule_aind_ephys_results_collector_9_21 = channel.create()
 ecephys_to_aind_ephys_results_collector_22 = channel.fromPath(params.ecephys_url + "/*", type: 'any')
-ecephys_to__clone_nwb_packaging_subject_capsule_23 = channel.fromPath(params.ecephys_url + "/*", type: 'any')
+ecephys_to_nwb_packaging_subject_capsule_23 = channel.fromPath(params.ecephys_url + "/*", type: 'any')
 capsule_aind_ephys_results_collector_9_to_capsule_nwb_packaging_units_11_24 = channel.create()
 ecephys_to_nwb_packaging_units_25 = channel.fromPath(params.ecephys_url + "/*", type: 'any')
-capsule_clone_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26 = channel.create()
+capsule_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26 = channel.create()
 
 // capsule - aind-ephys-preprocessing
 process capsule_aind_ephys_preprocessing_1 {
@@ -73,7 +73,7 @@ process capsule_aind_ephys_preprocessing_1 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_aind_ephys_preprocessing_1_args}
+	./run
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -128,8 +128,8 @@ process capsule_aind_ephys_job_dispatch_4 {
 	tag 'capsule-5089190'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/44358dbf-921b-42d7-897d-9725eebd5ed8'
 
-	cpus 8
-	memory '64 GB'
+	cpus 4
+	memory '32 GB'
 
 	input:
 	path 'capsule/data/ecephys_session/' from ecephys_to_aind_ephys_job_dispatch_4.collect()
@@ -144,8 +144,8 @@ process capsule_aind_ephys_job_dispatch_4 {
 	set -e
 
 	export CO_CAPSULE_ID=44358dbf-921b-42d7-897d-9725eebd5ed8
-	export CO_CPUS=8
-	export CO_MEMORY=68719476736
+	export CO_CPUS=4
+	export CO_MEMORY=34359738368
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -161,7 +161,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_aind_ephys_job_dispatch_4_args}
+	./run
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -220,8 +220,8 @@ process capsule_aind_ephys_visualization_6 {
 	tag 'capsule-6668112'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/628c3c19-61bc-4f0c-80b2-00e81f83c176'
 
-	cpus 8
-	memory '64 GB'
+	cpus 4
+	memory '32 GB'
 
 	input:
 	path 'capsule/data/' from capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_visualization_6_8.collect()
@@ -240,8 +240,8 @@ process capsule_aind_ephys_visualization_6 {
 	set -e
 
 	export CO_CAPSULE_ID=628c3c19-61bc-4f0c-80b2-00e81f83c176
-	export CO_CPUS=8
-	export CO_MEMORY=68719476736
+	export CO_CPUS=4
+	export CO_MEMORY=34359738368
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -361,8 +361,8 @@ process capsule_aind_ephys_results_collector_9 {
 	tag 'capsule-4820071'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5'
 
-	cpus 8
-	memory '64 GB'
+	cpus 4
+	memory '32 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -385,8 +385,8 @@ process capsule_aind_ephys_results_collector_9 {
 	set -e
 
 	export CO_CAPSULE_ID=2fcf1c0b-df5d-4822-b078-9e1024a092c5
-	export CO_CPUS=8
-	export CO_MEMORY=68719476736
+	export CO_CPUS=4
+	export CO_MEMORY=34359738368
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -408,28 +408,28 @@ process capsule_aind_ephys_results_collector_9 {
 	"""
 }
 
-// capsule - (clone) NWB-Packaging-Subject-Capsule
-process capsule_clone_nwb_packaging_subject_capsule_10 {
-	tag 'capsule-1992517'
-	container 'registry.codeocean.allenneuraldynamics.org/capsule/45c08815-912f-471b-b064-d3b4f244970d'
+// capsule - NWB-Packaging-Subject-Capsule
+process capsule_nwb_packaging_subject_capsule_10 {
+	tag 'capsule-1748641'
+	container 'registry.codeocean.allenneuraldynamics.org/capsule/dde17e00-2bad-4ceb-a00e-699ec25aca64'
 
-	cpus 1
-	memory '8 GB'
+	cpus 4
+	memory '32 GB'
 
 	input:
-	path 'capsule/data/ecephys_session/' from ecephys_to__clone_nwb_packaging_subject_capsule_23.collect()
+	path 'capsule/data/ecephys_session/' from ecephys_to_nwb_packaging_subject_capsule_23.collect()
 
 	output:
-	path 'capsule/results/*' into capsule_clone_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26
+	path 'capsule/results/*' into capsule_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26
 
 	script:
 	"""
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=45c08815-912f-471b-b064-d3b4f244970d
-	export CO_CPUS=1
-	export CO_MEMORY=8589934592
+	export CO_CAPSULE_ID=dde17e00-2bad-4ceb-a00e-699ec25aca64
+	export CO_CPUS=4
+	export CO_MEMORY=34359738368
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -437,15 +437,15 @@ process capsule_clone_nwb_packaging_subject_capsule_10 {
 	mkdir -p capsule/scratch && ln -s \$PWD/capsule/scratch /scratch
 
 	echo "[${task.tag}] cloning git repo..."
-	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-1992517.git" capsule-repo
-	git -C capsule-repo checkout 4a4f07a338d9b684f3473f4876a343ea8b05727f --quiet
+	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-1748641.git" capsule-repo
+	git -C capsule-repo checkout a283847a5da6af1deebbcadc75212849bacb4889 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_clone_nwb_packaging_subject_capsule_10_args}
+	./run
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -456,15 +456,15 @@ process capsule_nwb_packaging_units_11 {
 	tag 'capsule-7106853'
 	container 'registry.codeocean.allenneuraldynamics.org/capsule/9be90966-938b-4084-8959-4966e9dbb955'
 
-	cpus 8
-	memory '64 GB'
+	cpus 4
+	memory '32 GB'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
 	input:
 	path 'capsule/data/' from capsule_aind_ephys_results_collector_9_to_capsule_nwb_packaging_units_11_24.collect()
 	path 'capsule/data/ecephys_session/' from ecephys_to_nwb_packaging_units_25.collect()
-	path 'capsule/data/' from capsule_clone_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26.collect()
+	path 'capsule/data/' from capsule_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26.collect()
 
 	output:
 	path 'capsule/results/*'
@@ -475,8 +475,8 @@ process capsule_nwb_packaging_units_11 {
 	set -e
 
 	export CO_CAPSULE_ID=9be90966-938b-4084-8959-4966e9dbb955
-	export CO_CPUS=8
-	export CO_MEMORY=68719476736
+	export CO_CPUS=4
+	export CO_MEMORY=34359738368
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -485,7 +485,7 @@ process capsule_nwb_packaging_units_11 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-7106853.git" capsule-repo
-	git -C capsule-repo checkout 55a39175d564e2084d25c2c166ee18fb3470b934 --quiet
+	git -C capsule-repo checkout 0eee1c798a5f9ef147591e1adf548ce20e9070a0 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
