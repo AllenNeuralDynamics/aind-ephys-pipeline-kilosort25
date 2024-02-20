@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:4591d6d2c8fa8dd477d2c93fc49b7bda53e91f457451cbba28fceb48a5513195
+// hash:sha256:31a5f99b74f9d9b0677df4ad027f4645c80f8c36dc1a366ef82d838d3e0aae2f
 
 nextflow.enable.dsl = 1
 
@@ -73,7 +73,7 @@ process capsule_aind_ephys_preprocessing_1 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run
+	./run ${params.capsule_aind_ephys_preprocessing_1_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -161,7 +161,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run
+	./run ${params.capsule_aind_ephys_job_dispatch_4_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -438,14 +438,14 @@ process capsule_nwb_packaging_subject_capsule_10 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-1748641.git" capsule-repo
-	git -C capsule-repo checkout a283847a5da6af1deebbcadc75212849bacb4889 --quiet
+	git -C capsule-repo checkout 9dc8a496f86fe38250d584b8e3d396581b7e404b --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run
+	./run ${params.capsule_nwb_packaging_subject_capsule_10_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -485,7 +485,7 @@ process capsule_nwb_packaging_units_11 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-7106853.git" capsule-repo
-	git -C capsule-repo checkout ee17cafba440134a4ade704dc8df4cac99050c29 --quiet
+	git -C capsule-repo checkout e4b0eca9bb5b2e76ffd7815b70dab5df55955e82 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
