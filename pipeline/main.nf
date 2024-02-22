@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:31a5f99b74f9d9b0677df4ad027f4645c80f8c36dc1a366ef82d838d3e0aae2f
+// hash:sha256:92e7b4b86bd8ef1398e766610c9f7b59de3de2d10c3b5e8d00a41c1832ca083d
 
 nextflow.enable.dsl = 1
 
@@ -66,14 +66,14 @@ process capsule_aind_ephys_preprocessing_1 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@codeocean.allenneuraldynamics.org/capsule-0874799.git" capsule-repo
-	git -C capsule-repo checkout 993eafe057c4c2f301625eadaa160e4b1992e2b1 --quiet
+	git -C capsule-repo checkout a39afcd6f533ef584d721423815206192bddb12c --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_aind_ephys_preprocessing_1_args}
+	./run
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -161,7 +161,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_aind_ephys_job_dispatch_4_args}
+	./run
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -445,7 +445,7 @@ process capsule_nwb_packaging_subject_capsule_10 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_nwb_packaging_subject_capsule_10_args}
+	./run
 
 	echo "[${task.tag}] completed!"
 	"""
