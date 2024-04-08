@@ -1,11 +1,11 @@
 metadata_version: 1
-name: aind-ephys-pipeline-kilosort25
+name: aind-ephys-pipeline-kilosort25-opto
 description: |-
   Electrophysiology analysis pipeline using Kilosort2.5 via SpikeInterface.
 
   The pipeline includes:
 
-  - preprocessing: phase_shift, highpass filter, denoising (bad channel removal + common median reference ("cmr") or highpass spatial filter - "destripe"), and motion estimation (optionally correction)
+  - preprocessing: phase_shift, highpass filter, notch filter, denoising (bad channel removal + common median reference ("cmr") or highpass spatial filter - "destripe"), optical artifact removal, and motion estimation (optionally correction)
   - spike sorting: with Kilosort2.5
   - postprocessing: remove duplicate units, compute amplitudes, spike/unit locations, PCA, correlograms, template similarity, template metrics, and quality metrics
   - curation: based on ISI violation ratio, presence ratio, and amplitude cutoff

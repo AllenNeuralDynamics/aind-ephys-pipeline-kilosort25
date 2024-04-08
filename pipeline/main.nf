@@ -1,61 +1,61 @@
 #!/usr/bin/env nextflow
-// hash:sha256:d3b7d869562ee0529711d011b5aa5f93b26dbc5f29202736ada5073909670a9b
+// hash:sha256:d9428b14def9bf2fa39cde38ac129477e2fc98a84bad30cc170791fa112cb096
 
 nextflow.enable.dsl = 1
 
 params.ecephys_url = 's3://aind-ephys-data/ecephys_713593_2024-02-08_14-10-37'
 
-capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_preprocessing_1_1 = channel.create()
-ecephys_to_aind_ephys_preprocessing_2 = channel.fromPath(params.ecephys_url + "/", type: 'any')
+capsule_aind_ephys_job_dispatch_4_to_capsule_opto_preprocess_ecephys_1_1 = channel.create()
+ecephys_to_opto_preprocess_ecephys_2 = channel.fromPath(params.ecephys_url + "/", type: 'any')
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_curation_2_3 = channel.create()
-ecephys_to_aind_ephys_job_dispatch_4 = channel.fromPath(params.ecephys_url + "/", type: 'any')
+ecephys_to_job_dispatch_ecephys_4 = channel.fromPath(params.ecephys_url + "/", type: 'any')
 capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_postprocessing_5_5 = channel.create()
-capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_postprocessing_5_6 = channel.create()
+capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_postprocessing_5_6 = channel.create()
 capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_postprocessing_5_7 = channel.create()
 capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_visualization_6_8 = channel.create()
-capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_visualization_6_9 = channel.create()
+capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_visualization_6_9 = channel.create()
 capsule_aind_ephys_curation_2_to_capsule_aind_ephys_visualization_6_10 = channel.create()
 capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_visualization_6_11 = channel.create()
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_visualization_6_12 = channel.create()
-ecephys_to_aind_ephys_visualization_13 = channel.fromPath(params.ecephys_url + "/", type: 'any')
-capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_14 = channel.create()
+ecephys_to_visualize_ecephys_13 = channel.fromPath(params.ecephys_url + "/", type: 'any')
+capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_14 = channel.create()
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_unit_classifier_8_15 = channel.create()
-capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_results_collector_9_16 = channel.create()
+capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_results_collector_9_16 = channel.create()
 capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_results_collector_9_17 = channel.create()
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_results_collector_9_18 = channel.create()
 capsule_aind_ephys_curation_2_to_capsule_aind_ephys_results_collector_9_19 = channel.create()
 capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_results_collector_9_20 = channel.create()
 capsule_aind_ephys_visualization_6_to_capsule_aind_ephys_results_collector_9_21 = channel.create()
-ecephys_to_aind_ephys_results_collector_22 = channel.fromPath(params.ecephys_url + "/", type: 'any')
+ecephys_to_collect_results_ecephys_22 = channel.fromPath(params.ecephys_url + "/", type: 'any')
 ecephys_to_nwb_packaging_subject_capsule_23 = channel.fromPath(params.ecephys_url + "/", type: 'any')
 capsule_aind_ephys_results_collector_9_to_capsule_nwb_packaging_units_11_24 = channel.create()
 ecephys_to_nwb_packaging_units_25 = channel.fromPath(params.ecephys_url + "/", type: 'any')
 capsule_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26 = channel.create()
 
-// capsule - aind-ephys-preprocessing
-process capsule_aind_ephys_preprocessing_1 {
-	tag 'capsule-0874799'
-	container "$REGISTRY_HOST/capsule/05eaf483-9ca3-4a9e-8da8-7d23717f6faf"
+// capsule - Opto Preprocess Ecephys
+process capsule_opto_preprocess_ecephys_1 {
+	tag 'capsule-7804236'
+	container "$REGISTRY_HOST/capsule/adfadf5b-a168-4a25-a299-d07819b7d7ee"
 
 	cpus 16
 	memory '64 GB'
 
 	input:
-	path 'capsule/data/' from capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_preprocessing_1_1.flatten()
-	path 'capsule/data/ecephys_session' from ecephys_to_aind_ephys_preprocessing_2.collect()
+	path 'capsule/data/' from capsule_aind_ephys_job_dispatch_4_to_capsule_opto_preprocess_ecephys_1_1.flatten()
+	path 'capsule/data/ecephys_session' from ecephys_to_opto_preprocess_ecephys_2.collect()
 
 	output:
-	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_postprocessing_5_6
-	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_visualization_6_9
-	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_14
-	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_results_collector_9_16
+	path 'capsule/results/*' into capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_postprocessing_5_6
+	path 'capsule/results/*' into capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_visualization_6_9
+	path 'capsule/results/*' into capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_14
+	path 'capsule/results/*' into capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_results_collector_9_16
 
 	script:
 	"""
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=05eaf483-9ca3-4a9e-8da8-7d23717f6faf
+	export CO_CAPSULE_ID=adfadf5b-a168-4a25-a299-d07819b7d7ee
 	export CO_CPUS=16
 	export CO_MEMORY=68719476736
 
@@ -65,21 +65,21 @@ process capsule_aind_ephys_preprocessing_1 {
 	mkdir -p capsule/scratch && ln -s \$PWD/capsule/scratch /scratch
 
 	echo "[${task.tag}] cloning git repo..."
-	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-0874799.git" capsule-repo
-	git -C capsule-repo checkout b1cd1246e3c1d8d2e58e5576883655eb6b71042c --quiet
+	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-7804236.git" capsule-repo
+	git -C capsule-repo checkout 24a47aeeb19b183a61fd9f45d2dc741a1ea01140 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_aind_ephys_preprocessing_1_args}
+	./run ${params.capsule_opto_preprocess_ecephys_1_args}
 
 	echo "[${task.tag}] completed!"
 	"""
 }
 
-// capsule - aind-ephys-curation
+// capsule - Curate Ecephys
 process capsule_aind_ephys_curation_2 {
 	tag 'capsule-8866682'
 	container "$REGISTRY_HOST/capsule/0e141650-15b9-4150-8277-2337557a8688"
@@ -123,7 +123,7 @@ process capsule_aind_ephys_curation_2 {
 	"""
 }
 
-// capsule - aind-ephys-job-dispatch
+// capsule - Job Dispatch Ecephys
 process capsule_aind_ephys_job_dispatch_4 {
 	tag 'capsule-5089190'
 	container "$REGISTRY_HOST/capsule/44358dbf-921b-42d7-897d-9725eebd5ed8"
@@ -132,10 +132,10 @@ process capsule_aind_ephys_job_dispatch_4 {
 	memory '32 GB'
 
 	input:
-	path 'capsule/data/ecephys_session' from ecephys_to_aind_ephys_job_dispatch_4.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_job_dispatch_ecephys_4.collect()
 
 	output:
-	path 'capsule/results/*' into capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_preprocessing_1_1
+	path 'capsule/results/*' into capsule_aind_ephys_job_dispatch_4_to_capsule_opto_preprocess_ecephys_1_1
 	path 'capsule/results/*' into capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_postprocessing_5_7
 
 	script:
@@ -167,7 +167,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 	"""
 }
 
-// capsule - aind-ephys-postprocessing
+// capsule - Postprocess Ecephys
 process capsule_aind_ephys_postprocessing_5 {
 	tag 'capsule-5473620'
 	container "$REGISTRY_HOST/capsule/6020e947-d8ea-4b64-998b-37404eb5ea51"
@@ -177,7 +177,7 @@ process capsule_aind_ephys_postprocessing_5 {
 
 	input:
 	path 'capsule/data/' from capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_postprocessing_5_5.collect()
-	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_postprocessing_5_6.collect()
+	path 'capsule/data/' from capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_postprocessing_5_6.collect()
 	path 'capsule/data/' from capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_postprocessing_5_7.flatten()
 
 	output:
@@ -215,7 +215,7 @@ process capsule_aind_ephys_postprocessing_5 {
 	"""
 }
 
-// capsule - aind-ephys-visualization
+// capsule - Visualize Ecephys
 process capsule_aind_ephys_visualization_6 {
 	tag 'capsule-6668112'
 	container "$REGISTRY_HOST/capsule/628c3c19-61bc-4f0c-80b2-00e81f83c176"
@@ -225,11 +225,11 @@ process capsule_aind_ephys_visualization_6 {
 
 	input:
 	path 'capsule/data/' from capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_visualization_6_8.collect()
-	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_visualization_6_9
+	path 'capsule/data/' from capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_visualization_6_9
 	path 'capsule/data/' from capsule_aind_ephys_curation_2_to_capsule_aind_ephys_visualization_6_10.collect()
 	path 'capsule/data/' from capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_visualization_6_11.collect()
 	path 'capsule/data/' from capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_visualization_6_12.collect()
-	path 'capsule/data/ecephys_session' from ecephys_to_aind_ephys_visualization_13.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_visualize_ecephys_13.collect()
 
 	output:
 	path 'capsule/results/*' into capsule_aind_ephys_visualization_6_to_capsule_aind_ephys_results_collector_9_21
@@ -263,7 +263,7 @@ process capsule_aind_ephys_visualization_6 {
 	"""
 }
 
-// capsule - aind-ephys-spikesort-kilosort25
+// capsule - Spikesort Kilosort2.5 Ecephys
 process capsule_aind_ephys_spikesort_kilosort_25_7 {
 	tag 'capsule-2633671'
 	container "$REGISTRY_HOST/capsule/9c169ec3-5933-4b10-808b-6fa4620e37b7"
@@ -274,7 +274,7 @@ process capsule_aind_ephys_spikesort_kilosort_25_7 {
 	label 'gpu'
 
 	input:
-	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_14
+	path 'capsule/data/' from capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_14
 
 	output:
 	path 'capsule/results/*' into capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_postprocessing_5_5
@@ -310,7 +310,7 @@ process capsule_aind_ephys_spikesort_kilosort_25_7 {
 	"""
 }
 
-// capsule - aind-ephys-unit-classifier
+// capsule - Unit Classifier Ecephys
 process capsule_aind_ephys_unit_classifier_8 {
 	tag 'capsule-3820244'
 	container "$REGISTRY_HOST/capsule/25e96d32-73e9-4a19-b967-f095ffe06c28"
@@ -356,7 +356,7 @@ process capsule_aind_ephys_unit_classifier_8 {
 	"""
 }
 
-// capsule - aind-ephys-results-collector
+// capsule - Collect Results Ecephys
 process capsule_aind_ephys_results_collector_9 {
 	tag 'capsule-4820071'
 	container "$REGISTRY_HOST/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5"
@@ -367,13 +367,13 @@ process capsule_aind_ephys_results_collector_9 {
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
 	input:
-	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_results_collector_9_16.collect()
+	path 'capsule/data/' from capsule_opto_preprocess_ecephys_1_to_capsule_aind_ephys_results_collector_9_16.collect()
 	path 'capsule/data/' from capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_results_collector_9_17.collect()
 	path 'capsule/data/' from capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_results_collector_9_18.collect()
 	path 'capsule/data/' from capsule_aind_ephys_curation_2_to_capsule_aind_ephys_results_collector_9_19.collect()
 	path 'capsule/data/' from capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_results_collector_9_20.collect()
 	path 'capsule/data/' from capsule_aind_ephys_visualization_6_to_capsule_aind_ephys_results_collector_9_21.collect()
-	path 'capsule/data/ecephys_session' from ecephys_to_aind_ephys_results_collector_22.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_collect_results_ecephys_22.collect()
 
 	output:
 	path 'capsule/results/*'
