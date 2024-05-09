@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:5b88763ca08c50fe75bb8d1116c5060a262db614a35b0ec3973b4e0daff76771
+// hash:sha256:c80612782c22f04499cd6dd0a9aa7dba53716174eba55d2a69ed6328636b499c
 
 nextflow.enable.dsl = 1
 
@@ -35,7 +35,7 @@ capsule_nwb_packaging_subject_capsule_10_to_capsule_nwb_packaging_units_11_26 = 
 // capsule - Opto Preprocess Ecephys
 process capsule_opto_preprocess_ecephys_1 {
 	tag 'capsule-7804236'
-	container "$REGISTRY_HOST/capsule/adfadf5b-a168-4a25-a299-d07819b7d7ee"
+	container "$REGISTRY_HOST/capsule/adfadf5b-a168-4a25-a299-d07819b7d7ee:1e0116b60bd209c2504d28c81d11e3c2"
 
 	cpus 16
 	memory '64 GB'
@@ -66,7 +66,7 @@ process capsule_opto_preprocess_ecephys_1 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-7804236.git" capsule-repo
-	git -C capsule-repo checkout 24a47aeeb19b183a61fd9f45d2dc741a1ea01140 --quiet
+	git -C capsule-repo checkout 5e91d2bc8ed362bae1c868e71582e98e36426fc7 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -82,7 +82,7 @@ process capsule_opto_preprocess_ecephys_1 {
 // capsule - Curate Ecephys
 process capsule_aind_ephys_curation_2 {
 	tag 'capsule-8866682'
-	container "$REGISTRY_HOST/capsule/0e141650-15b9-4150-8277-2337557a8688"
+	container "$REGISTRY_HOST/capsule/0e141650-15b9-4150-8277-2337557a8688:0d6b91d1234e12a6e20b73a991451ef8"
 
 	cpus 1
 	memory '8 GB'
@@ -126,7 +126,7 @@ process capsule_aind_ephys_curation_2 {
 // capsule - Job Dispatch Ecephys
 process capsule_aind_ephys_job_dispatch_4 {
 	tag 'capsule-5089190'
-	container "$REGISTRY_HOST/capsule/44358dbf-921b-42d7-897d-9725eebd5ed8"
+	container "$REGISTRY_HOST/capsule/44358dbf-921b-42d7-897d-9725eebd5ed8:d9efbffdb9ba2a018e61bce44a749dae"
 
 	cpus 4
 	memory '32 GB'
@@ -170,7 +170,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 // capsule - Postprocess Ecephys
 process capsule_aind_ephys_postprocessing_5 {
 	tag 'capsule-5473620'
-	container "$REGISTRY_HOST/capsule/6020e947-d8ea-4b64-998b-37404eb5ea51"
+	container "$REGISTRY_HOST/capsule/6020e947-d8ea-4b64-998b-37404eb5ea51:f5de5c9ef62034fb5dfa79b4c47f94f3"
 
 	cpus 16
 	memory '128 GB'
@@ -218,7 +218,7 @@ process capsule_aind_ephys_postprocessing_5 {
 // capsule - Visualize Ecephys
 process capsule_aind_ephys_visualization_6 {
 	tag 'capsule-6668112'
-	container "$REGISTRY_HOST/capsule/628c3c19-61bc-4f0c-80b2-00e81f83c176"
+	container "$REGISTRY_HOST/capsule/628c3c19-61bc-4f0c-80b2-00e81f83c176:e3db88f8955c4765c4ecb9b62046b794"
 
 	cpus 4
 	memory '32 GB'
@@ -266,7 +266,7 @@ process capsule_aind_ephys_visualization_6 {
 // capsule - Spikesort Kilosort2.5 Ecephys
 process capsule_aind_ephys_spikesort_kilosort_25_7 {
 	tag 'capsule-2633671'
-	container "$REGISTRY_HOST/capsule/9c169ec3-5933-4b10-808b-6fa4620e37b7"
+	container "$REGISTRY_HOST/capsule/9c169ec3-5933-4b10-808b-6fa4620e37b7:8102a73af6223bec8a43fe66e8b1c1f4"
 
 	cpus 16
 	memory '61 GB'
@@ -313,7 +313,7 @@ process capsule_aind_ephys_spikesort_kilosort_25_7 {
 // capsule - Unit Classifier Ecephys
 process capsule_aind_ephys_unit_classifier_8 {
 	tag 'capsule-3820244'
-	container "$REGISTRY_HOST/capsule/25e96d32-73e9-4a19-b967-f095ffe06c28"
+	container "$REGISTRY_HOST/capsule/25e96d32-73e9-4a19-b967-f095ffe06c28:a07a3aaf0da3c66ff5bba8ce46e9ebf4"
 
 	cpus 8
 	memory '64 GB'
@@ -359,7 +359,7 @@ process capsule_aind_ephys_unit_classifier_8 {
 // capsule - Collect Results Ecephys
 process capsule_aind_ephys_results_collector_9 {
 	tag 'capsule-4820071'
-	container "$REGISTRY_HOST/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5"
+	container "$REGISTRY_HOST/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5:46813b8243e51c3a51f4a62820fe40a8"
 
 	cpus 4
 	memory '32 GB'
@@ -395,7 +395,7 @@ process capsule_aind_ephys_results_collector_9 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-4820071.git" capsule-repo
-	git -C capsule-repo checkout d534871fc47a816308c85fe7916f3d641246b1e2 --quiet
+	git -C capsule-repo checkout 78c4aeb034b63035cd2fc4724f88d577524f70e5 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -411,7 +411,7 @@ process capsule_aind_ephys_results_collector_9 {
 // capsule - NWB-Packaging-Subject-Capsule
 process capsule_nwb_packaging_subject_capsule_10 {
 	tag 'capsule-1748641'
-	container "$REGISTRY_HOST/capsule/dde17e00-2bad-4ceb-a00e-699ec25aca64"
+	container "$REGISTRY_HOST/capsule/dde17e00-2bad-4ceb-a00e-699ec25aca64:4b85e470d25ef637f46fc5ee05dcd7b5"
 
 	cpus 4
 	memory '32 GB'
@@ -438,7 +438,7 @@ process capsule_nwb_packaging_subject_capsule_10 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-1748641.git" capsule-repo
-	git -C capsule-repo checkout 0b95bdadcfefbbbbb8f5d23f6aba31f9752c03b3 --quiet
+	git -C capsule-repo checkout 9928dd3bbe8f66cd91918abc53b8e098768d2eaa --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -454,7 +454,7 @@ process capsule_nwb_packaging_subject_capsule_10 {
 // capsule - NWB-Packaging-Units
 process capsule_nwb_packaging_units_11 {
 	tag 'capsule-7106853'
-	container "$REGISTRY_HOST/capsule/9be90966-938b-4084-8959-4966e9dbb955"
+	container "$REGISTRY_HOST/capsule/9be90966-938b-4084-8959-4966e9dbb955:484f644987494ee3689d93bda64521c2"
 
 	cpus 4
 	memory '32 GB'
@@ -485,7 +485,7 @@ process capsule_nwb_packaging_units_11 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-7106853.git" capsule-repo
-	git -C capsule-repo checkout 993df309c7ac8f410cfcd42ce6b5dc0ce54c6a67 --quiet
+	git -C capsule-repo checkout 6c8d83477194af1aa13e931dc0d55e9743dcfb6a --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
