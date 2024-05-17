@@ -12,3 +12,8 @@ The pipeline includes:
 - unit classification based on pre-trained classifier (noise, MUA, SUA)
 - visualization: timeseries, drift maps, and sorting output in sortingview
 - export session, subject, and units data to NWB
+
+
+# Local deployment
+
+`NXF_VER=22.10.8 DATA_PATH=$PWD/../data  nextflow -C nextflow_local.config run main_local.nf --capsule_aind_ephys_preprocessing_1_args "--debug"`
