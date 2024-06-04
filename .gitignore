@@ -1,4 +1,5 @@
 /data/
 /results/
+/results*/
 /pipeline/work/
 **/.nextflow
