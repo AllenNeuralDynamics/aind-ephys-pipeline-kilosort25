@@ -2,4 +2,4 @@
 /results/
 /results*/
 /pipeline/work/
-**/.nextflow
+**/.nextflow*
