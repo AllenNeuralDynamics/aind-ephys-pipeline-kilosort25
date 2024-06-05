@@ -101,7 +101,23 @@ Currently, the pipeline supports the following input modes:
 
 # SLURM deployment
 
-TODO
+To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the `nextflow` and `singularity` installed.
+
+Then, you can submit the pipeline to the cluster similarly to the Local deplyment, 
+but wrapping the command into a script that can be launched with `sbatch`.
+
+Create a script `submit_aind_ephys_pipeline.job` with the following content:
+
+```bash
+#!/bin/bash
+#SBATCH --mem 5G
+#SBATCH -c 1
+#SBATCH -t 12:00:00
+
+conda activate nextflow
+
+NXF_VER=22.10.8 DATA_PATH=$PWD/../data RESULTS_PATH=$PWD/../results nextflow -C nextflow_slurm.config run main_slurm.nf -resume
+```
 
 
 # Create a custom layer for data ingestion
