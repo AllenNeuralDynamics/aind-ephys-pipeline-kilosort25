@@ -36,7 +36,7 @@ ecephys_to_nwb_packaging_units_si__26 = channel.fromPath(params.ecephys_path + "
 nwb_subject_to_nwb_units_27 = channel.create()
 
 
-// capsule - Job Dispatch Ecephys (SI)
+// capsule - Job Dispatch Ecephys
 process job_dispatch {
 	tag 'capsule-5832718'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
@@ -57,10 +57,6 @@ process job_dispatch {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=cb734cf3-2f88-4b69-bf0a-d5869e6706e3
-	export CO_CPUS=4
-	export CO_MEMORY=34359738368
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -68,7 +64,7 @@ process job_dispatch {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
-	git -C capsule-repo checkout 62f4fa0002adda9ff485575261cefa101fa84f94 --quiet
+	git -C capsule-repo checkout 2b5ff34ee7c6892f51a4931113b40b5752c25fb7 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -81,7 +77,7 @@ process job_dispatch {
 	"""
 }
 
-// capsule - Preprocess Ecephys (SI)
+// capsule - Preprocess Ecephys
 process preprocessing {
 	tag 'capsule-4923505'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
@@ -104,10 +100,6 @@ process preprocessing {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=068a0863-8576-45c4-827c-e53fd3e926a9
-	export CO_CPUS=16
-	export CO_MEMORY=68719476736
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -115,7 +107,7 @@ process preprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing.git" capsule-repo
-	git -C capsule-repo checkout 7d11e5828b4eb6da5a4fc4f9a1bd9aa8e9a40371 --quiet
+	git -C capsule-repo checkout d24ba855e55c9202e8ce9a17c581cc07d9a08cc3 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -149,10 +141,6 @@ process spikesort_kilosort25 {
 	"""
 	#!/usr/bin/env bash
 	set -e
-
-	export CO_CAPSULE_ID=9c169ec3-5933-4b10-808b-6fa4620e37b7
-	export CO_CPUS=16
-	export CO_MEMORY=65498251264
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -199,10 +187,6 @@ process postprocessing {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=6020e947-d8ea-4b64-998b-37404eb5ea51
-	export CO_CPUS=16
-	export CO_MEMORY=137438953472
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -243,10 +227,6 @@ process curation {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=0e141650-15b9-4150-8277-2337557a8688
-	export CO_CPUS=1
-	export CO_MEMORY=8589934592
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -286,10 +266,6 @@ process unit_classifier {
 	"""
 	#!/usr/bin/env bash
 	set -e
-
-	export CO_CAPSULE_ID=25e96d32-73e9-4a19-b967-f095ffe06c28
-	export CO_CPUS=8
-	export CO_MEMORY=68719476736
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -336,10 +312,6 @@ process visualization {
 	"""
 	#!/usr/bin/env bash
 	set -e
-
-	export CO_CAPSULE_ID=628c3c19-61bc-4f0c-80b2-00e81f83c176
-	export CO_CPUS=4
-	export CO_MEMORY=34359738368
 
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
@@ -389,10 +361,6 @@ process results_collector {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=2fcf1c0b-df5d-4822-b078-9e1024a092c5
-	export CO_CPUS=4
-	export CO_MEMORY=34359738368
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -413,7 +381,7 @@ process results_collector {
 	"""
 }
 
-// capsule - NWB-Packaging-Subject-Capsule (SI)
+// capsule - NWB-Packaging-Subject-Capsule
 process nwb_subject {
 	tag 'capsule-9109637'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:latest'
@@ -432,10 +400,6 @@ process nwb_subject {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=83d65ee1-2817-4427-8fef-96f35bacfa53
-	export CO_CPUS=4
-	export CO_MEMORY=34359738368
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -443,7 +407,7 @@ process nwb_subject {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Subject_Capsule.git" capsule-repo
-    git -C capsule-repo checkout 47da9be3276130551019f819505e747b6673695f --quiet
+    git -C capsule-repo checkout 6498a1bae14bf7edeb1a282accd39a41156a0952 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -456,7 +420,7 @@ process nwb_subject {
 	"""
 }
 
-// capsule - NWB-Packaging-Units (SI)
+// capsule - NWB-Packaging-Units
 process nwb_units {
 	tag 'capsule-6946197'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:latest'
@@ -480,10 +444,6 @@ process nwb_units {
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=45c69abb-ec47-4ce4-9658-ee291a3e14e8
-	export CO_CPUS=4
-	export CO_MEMORY=34359738368
-
 	mkdir -p capsule
 	mkdir -p capsule/data && ln -s \$PWD/capsule/data /data
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
@@ -491,7 +451,7 @@ process nwb_units {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Units.git" capsule-repo
-	git -C capsule-repo checkout 5d39d57857c3b6fbf964c01e295cf2aba3787bcd --quiet
+	git -C capsule-repo checkout 3d201ac586e76175f24ac372a767581b29922538 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
