@@ -1,16 +1,16 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl = 1
 
-params.ecephys_path = DATA_PATH + "/ecephys"
+params.ecephys_path = DATA_PATH
 
 println "DATA_PATH: ${DATA_PATH}"
 println "RESULTS_PATH: ${RESULTS_PATH}"
 println "Params: ${params}"
 
 job_dispatch_to_preprocessing_1 = channel.create()
-ecephys_to_preprocessing_ecephys_si__2 = channel.fromPath(params.ecephys_path + "/", type: 'any')
+ecephys_to_preprocessing_ecephys_2 = channel.fromPath(params.ecephys_path + "/", type: 'any')
 postprocessing_to_curation_3 = channel.create()
-ecephys_to_job_dispatch_ecephys_si__4 = channel.fromPath(params.ecephys_path + "/", type: 'any')
+ecephys_to_job_dispatch_ecephys_4 = channel.fromPath(params.ecephys_path + "/", type: 'any')
 spikesort_kilosort25_to_postprocessing_5 = channel.create()
 preprocessing_to_postprocessing_6 = channel.create()
 job_dispatch_to_postprocessing_7 = channel.create()
@@ -29,20 +29,20 @@ curation_to_results_collector_19 = channel.create()
 unit_classifier_to_results_collector_20 = channel.create()
 visualization_to_results_collector_21 = channel.create()
 ecephys_to_collect_results_ecephys_22 = channel.fromPath(params.ecephys_path + "/", type: 'any')
-ecephys_to_nwb_packaging_subject_capsule_si__23 = channel.fromPath(params.ecephys_path + "/", type: 'any')
+ecephys_to_nwb_packaging_subject_capsule_23 = channel.fromPath(params.ecephys_path + "/", type: 'any')
 job_dispatch_to_nwb_units_24 = channel.create()
 results_collector_to_nwb_units_25 = channel.create()
-ecephys_to_nwb_packaging_units_si__26 = channel.fromPath(params.ecephys_path + "/", type: 'any')
+ecephys_to_nwb_packaging_units_26 = channel.fromPath(params.ecephys_path + "/", type: 'any')
 nwb_subject_to_nwb_units_27 = channel.create()
 
 
 // capsule - Job Dispatch Ecephys
 process job_dispatch {
 	tag 'capsule-5832718'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	input:
-	path 'capsule/data/ecephys_session' from ecephys_to_job_dispatch_ecephys_si__4.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_job_dispatch_ecephys_4.collect()
 
 	output:
 	path 'capsule/results/*' into job_dispatch_to_preprocessing_1
@@ -61,7 +61,7 @@ process job_dispatch {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
-	git -C capsule-repo checkout 31beaed981c0287c77b7def3d2b598ee048852c5 --quiet
+	git -C capsule-repo checkout 87638e201788213cdbd2b18e8e2d692cfe0889b8 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -77,11 +77,11 @@ process job_dispatch {
 // capsule - Preprocess Ecephys
 process preprocessing {
 	tag 'capsule-4923505'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	input:
 	path 'capsule/data/' from job_dispatch_to_preprocessing_1.flatten()
-	path 'capsule/data/ecephys_session' from ecephys_to_preprocessing_ecephys_si__2.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_preprocessing_ecephys_2.collect()
 
 	output:
 	path 'capsule/results/*' into preprocessing_to_postprocessing_6
@@ -101,7 +101,7 @@ process preprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing.git" capsule-repo
-	git -C capsule-repo checkout d24ba855e55c9202e8ce9a17c581cc07d9a08cc3 --quiet
+	git -C capsule-repo checkout b6a5b5dc581fabcba74f87b27719b6b32238476c --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -117,7 +117,7 @@ process preprocessing {
 // capsule - Spikesort Kilosort2.5 Ecephys
 process spikesort_kilosort25 {
 	tag 'capsule-2633671'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:si-0.100.7'
 	containerOptions '--gpus all'
 
 	input:
@@ -140,7 +140,7 @@ process spikesort_kilosort25 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort25.git" capsule-repo
-	git -C capsule-repo checkout b8fd5dcfdb3b1c584335075a1679051e23066b67 --quiet
+	git -C capsule-repo checkout b1188fb9857eff4d4d6af8e35fd8f7e042cb7277 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -157,7 +157,7 @@ process spikesort_kilosort25 {
 // capsule - Postprocess Ecephys
 process postprocessing {
 	tag 'capsule-5473620'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	input:
 	path 'capsule/data/' from spikesort_kilosort25_to_postprocessing_5.collect()
@@ -182,7 +182,7 @@ process postprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-postprocessing.git" capsule-repo
-	git -C capsule-repo checkout e1be32db7835b0254a7dd9c1dbbbdb619531280b --quiet
+	git -C capsule-repo checkout 146a7e6d44170aff509a91dda76d216d61e67392 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -198,7 +198,7 @@ process postprocessing {
 // capsule - Curate Ecephys
 process curation {
 	tag 'capsule-8866682'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	input:
 	path 'capsule/data/' from postprocessing_to_curation_3
@@ -219,7 +219,7 @@ process curation {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-curation.git" capsule-repo
-	git -C capsule-repo checkout 3453bfe103f0ec686b1499ce9d578ce1c34cc437 --quiet
+	git -C capsule-repo checkout 61ff53bfee0c5288d15cd39359af1e54cbf56b06 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -235,7 +235,7 @@ process curation {
 // capsule - Unit Classifier Ecephys
 process unit_classifier {
 	tag 'capsule-3820244'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-unit-classifier:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-unit-classifier:si-0.100.7'
 
 	input:
 	path 'capsule/data/' from postprocessing_to_unit_classifier_15
@@ -254,11 +254,9 @@ process unit_classifier {
 	mkdir -p capsule/results && ln -s \$PWD/capsule/results /results
 	mkdir -p capsule/scratch && ln -s \$PWD/capsule/scratch /scratch
 
-	ln -s "/tmp/data/unit_classifier_models_v1.0" "capsule/data/unit_classifier_models_v1.0" # id: 7daf6149-88d2-44ba-8218-b519b4fba45f
-
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-unit-classifier.git" capsule-repo
-	git -C capsule-repo checkout 3b910faff714de4cbe8ac3b6e7bd2dd169661dcf --quiet
+	git -C capsule-repo checkout 8101698a09c84e6213e8be0facf02b1225c0279c --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -274,7 +272,7 @@ process unit_classifier {
 // capsule - Visualize Ecephys
 process visualization {
 	tag 'capsule-6668112'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 	containerOptions '--env KACHERY_ZONE --env KACHERY_CLOUD_CLIENT_ID --env KACHERY_CLOUD_PRIVATE_KEY'
 
 	input:
@@ -300,7 +298,7 @@ process visualization {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-visualization.git" capsule-repo
-	git -C capsule-repo checkout 870784619b9dd8360956f169f693b24f61ca4364 --quiet
+	git -C capsule-repo checkout a8b3942ca75f35cdc0e5cde5e8104fcd731494c7 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -316,7 +314,7 @@ process visualization {
 // capsule - Collect Results Ecephys
 process results_collector {
 	tag 'capsule-4820071'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -345,7 +343,7 @@ process results_collector {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-results-collector.git" capsule-repo
-	git -C capsule-repo checkout 78c4aeb034b63035cd2fc4724f88d577524f70e5 --quiet
+	git -C capsule-repo checkout b1f79f131a345bad32c67cc5f2e26783000fbfc4 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -361,10 +359,10 @@ process results_collector {
 // capsule - NWB-Packaging-Subject-Capsule
 process nwb_subject {
 	tag 'capsule-9109637'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7'
 
 	input:
-	path 'capsule/data/ecephys_session' from ecephys_to_nwb_packaging_subject_capsule_si__23.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_nwb_packaging_subject_capsule_23.collect()
 
 	output:
 	path 'capsule/results/*' into nwb_subject_to_nwb_units_27
@@ -381,7 +379,7 @@ process nwb_subject {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Subject_Capsule.git" capsule-repo
-    git -C capsule-repo checkout 6498a1bae14bf7edeb1a282accd39a41156a0952 --quiet
+    git -C capsule-repo checkout 004887780040094bbde60756909e5a3f2c99bdf1 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -397,14 +395,14 @@ process nwb_subject {
 // capsule - NWB-Packaging-Units
 process nwb_units {
 	tag 'capsule-6946197'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
 	input:
 	path 'capsule/data/' from job_dispatch_to_nwb_units_24.collect()
 	path 'capsule/data/' from results_collector_to_nwb_units_25.collect()
-	path 'capsule/data/ecephys_session' from ecephys_to_nwb_packaging_units_si__26.collect()
+	path 'capsule/data/ecephys_session' from ecephys_to_nwb_packaging_units_26.collect()
 	path 'capsule/data/' from nwb_subject_to_nwb_units_27.collect()
 
 	output:
@@ -422,7 +420,7 @@ process nwb_units {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Units.git" capsule-repo
-	git -C capsule-repo checkout 3d201ac586e76175f24ac372a767581b29922538 --quiet
+	git -C capsule-repo checkout f572f51f403a0d5bf9720c08900eadc0ed123377 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
