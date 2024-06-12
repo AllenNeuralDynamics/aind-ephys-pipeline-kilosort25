@@ -5,7 +5,18 @@ params.ecephys_path = DATA_PATH
 
 println "DATA_PATH: ${DATA_PATH}"
 println "RESULTS_PATH: ${RESULTS_PATH}"
-println "Params: ${params}"
+println "PARAMS: ${params}"
+
+// set global n_jobs
+if ("n_jobs" in params.keySet()) {
+	n_jobs = params.n_jobs
+}
+else
+{
+	n_jobs = -1
+}
+
+println "N JOBS: ${n_jobs}"
 
 job_dispatch_to_preprocessing_1 = channel.create()
 ecephys_to_preprocessing_ecephys_2 = channel.fromPath(params.ecephys_path + "/", type: 'any')
@@ -101,14 +112,14 @@ process preprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing.git" capsule-repo
-	git -C capsule-repo checkout b6a5b5dc581fabcba74f87b27719b6b32238476c --quiet
+	git -C capsule-repo checkout 23acc0e17e21e77a5e4a8900bae8218a085adf81 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.preprocessing_args}
+	./run ${params.preprocessing_args} --n-jobs ${n_jobs}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -147,7 +158,7 @@ process spikesort_kilosort25 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run
+	./run --n-jobs ${n_jobs}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -189,7 +200,7 @@ process postprocessing {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run
+	./run --n-jobs ${n_jobs}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -343,7 +354,7 @@ process results_collector {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-results-collector.git" capsule-repo
-	git -C capsule-repo checkout b1f79f131a345bad32c67cc5f2e26783000fbfc4 --quiet
+	git -C capsule-repo checkout 93225889f53278e856a02be5d4c140e0ab41937c --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 

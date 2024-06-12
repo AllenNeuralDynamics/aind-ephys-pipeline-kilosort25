@@ -156,12 +156,13 @@ Clone this repo (`git clone https://github.com/AllenNeuralDynamics/aind-ephys-pi
 To invoke the pipeline you can run the following command:
 
 ```bash
-NXF_VER=22.10.8 DATA_PATH=$PWD/../data RESULTS_PATH=$PWD/../results nextflow -C nextflow_local.config run main_local.nf -resume
+NXF_VER=22.10.8 DATA_PATH=$PWD/../data RESULTS_PATH=$PWD/../results nextflow -C nextflow_local.config run main_local.nf --n_jobs 8 -resume
 ```
 
 The `DATA_PATH` specifies the folder where the input files are located. 
 The `RESULT_PATH` points to the output folder, where the data will be saved.
-The `-resume` argument enables the Nextflow caching mechanism
+The `--n_jobs` argument specifies the number of parallel jobs to run.
+The `-resume` argument enables the Nextflow caching mechanism.
 
 ## Additional parameters
 
@@ -205,9 +206,6 @@ Currently, the pipeline supports the following input modes:
                         What motion preset to use. Can be 'nonrigid_accurate', 'kilosort_like', or 'nonrigid_fast_and_accurate'. Default "nonrigid_fast_and_accurate"
   --debug-duration DEBUG_DURATION
                         Duration of clipped recording in debug mode. Default is 30 seconds. Only used if debug is enabled
-  --n-jobs N_JOBS       Number of jobs to use for parallel processing. Default is -1 (all available cores). It can also be a float between 0 and 1 to use a fraction of available cores
-  --params-str PARAMS_STR
-                        Optional json string with parameters
 ```
 
 
@@ -219,17 +217,25 @@ Currently, the pipeline supports the following input modes:
 
 ```
 
+## Example run
+
+As an example, here is how to run the pipeline on a SpikeGLX dataset in debug mode 
+on a 120-second snippet of the recording with 16 jobs:
+
+```bash
+NXF_VER=22.10.8 DATA_PATH=path/to/data_spikeglx RESULTS_PATH=path/to/results_spikeglx nextflow -C nextflow_local.config run main_local.nf --n_jobs 16 --job_dispatch_args "--input spikeglx" --preprocessing_args "--debug --debug-duration 120"
+```
+
 
 # SLURM deployment
 
 To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the `nextflow` and `singularity` installed.
-To use cloud visualizations, follow the same steps descrived in the "Local 
-All the 
+To use cloud visualizations, follow the same steps descrived in the "Local deplyment" section and set the KACHERY environment variables.
 
 Then, you can submit the pipeline to the cluster similarly to the Local deplyment, 
 but wrapping the command into a script that can be launched with `sbatch`.
 
-Create a script `submit_aind_ephys_pipeline.job` with the following content:
+You can use the `slurm_submit.sh` script as a template to submit the pipeline to your cluster.
 
 ```bash
 #!/bin/bash
@@ -237,17 +243,30 @@ Create a script `submit_aind_ephys_pipeline.job` with the following content:
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=4GB
 #SBATCH --partition={your-partition}
-#SBATCH --time=24:00:00
+#SBATCH --time=2:00:00
 
-conda activate nextflow
+# modify this section to make the nextflow command available to your environment
+# e.g., using a conda environment with nextflow installed
+conda activate env_nf
+
 PIPELINE_PATH="path-to-your-cloned-repo"
 DATA_PATH="path-to-data-folder"
 RESULTS_PATH="path-to-results-folder"
+PIPELINE_PARAMS="" # e.g. "--preprocessing_args --debug --debug-duration 120 -resume"
 
-PIPELINE_PARAMS={1}
 
-NXF_VER=22.10.8 DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH \\
-    nextflow -C $PIPELINE_PATH/pipeline/nextflow_slurm.config run $PIPELINE_PATH/main_slurm.nf -resume
+NXF_VER=22.10.8 DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow \
+    -C $PIPELINE_PATH/pipeline/nextflow_slurm.config \
+    -log $RESULTS_PATH/nextflow/nextflow.log \
+    run $PIPELINE_PATH/pipeline/main_slurm.nf $PIPELINE_PARAMS
+```
+
+You should change the `--partition` parameter to match the partition you want to use on your cluster and point to the correct paths and parameters.
+
+Then, you can submit the script to the cluster with:
+
+```bash
+sbatch slurm_submit.sh
 ```
 
 # Create a custom layer for data ingestion
