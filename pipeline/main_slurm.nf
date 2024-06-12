@@ -124,7 +124,7 @@ process preprocessing {
 process spikesort_kilosort25 {
 	tag 'capsule-2633671'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:latest'
-	clusterOptions '--gpus-per-node=1'
+	clusterOptions '--gres=gpu:1'
 
 	cpus 16
 	memory '64 GB'
