@@ -193,7 +193,7 @@ process postprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-postprocessing.git" capsule-repo
-	git -C capsule-repo checkout 146a7e6d44170aff509a91dda76d216d61e67392 --quiet
+	git -C capsule-repo checkout eb984feee7d7490f1781cf7670ebb72196ccabfe --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
