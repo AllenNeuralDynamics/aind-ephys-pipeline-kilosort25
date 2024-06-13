@@ -43,6 +43,7 @@ process job_dispatch {
 
 	cpus 4
 	memory '32 GB'
+	time '1h'
 
 	input:
 	path 'capsule/data/ecephys_session' from ecephys_to_job_dispatch_ecephys_4.collect()
@@ -84,6 +85,7 @@ process preprocessing {
 
 	cpus 16
 	memory '64 GB'
+	time '4h'
 
 	input:
 	path 'capsule/data/' from job_dispatch_to_preprocessing_1.flatten()
@@ -130,6 +132,7 @@ process spikesort_kilosort25 {
 
 	cpus 16
 	memory '64 GB'
+	time '4h'
 
 	input:
 	path 'capsule/data/' from preprocessing_to_spikesort_kilosort25_14
@@ -172,6 +175,7 @@ process postprocessing {
 
 	cpus 16
 	memory '128 GB'
+	time '4h'
 
 	input:
 	path 'capsule/data/' from spikesort_kilosort25_to_postprocessing_5.collect()
@@ -216,6 +220,7 @@ process curation {
 
 	cpus 1
 	memory '8 GB'
+	time '10min'
 
 	input:
 	path 'capsule/data/' from postprocessing_to_curation_3
@@ -256,6 +261,7 @@ process unit_classifier {
 
 	cpus 8
 	memory '64 GB'
+	time '30min'
 
 	input:
 	path 'capsule/data/' from postprocessing_to_unit_classifier_15
@@ -296,6 +302,7 @@ process visualization {
 
 	cpus 4
 	memory '32 GB'
+	time '2h'
 
 	input:
 	path 'capsule/data/' from unit_classifier_to_visualization_8.collect()
@@ -340,6 +347,7 @@ process results_collector {
 
 	cpus 4
 	memory '32 GB'
+	time '1h'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -388,6 +396,7 @@ process nwb_subject {
 
 	cpus 4
 	memory '32 GB'
+	time '10min'
 
 	input:
 	path 'capsule/data/ecephys_session' from ecephys_to_nwb_packaging_subject_capsule_23.collect()
@@ -427,6 +436,7 @@ process nwb_units {
 
 	cpus 4
 	memory '32 GB'
+	time '2h'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
