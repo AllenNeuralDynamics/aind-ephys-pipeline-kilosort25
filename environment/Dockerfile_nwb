@@ -1,0 +1,22 @@
+FROM continuumio/miniconda3:23.9.0-0
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install -U --no-cache-dir \
+    hdmf-zarr==0.8.0 \
+    pynwb==2.8.0 \
+    neuroconv==0.4.10 \
+    zarr==2.17.2 \
+    wavpack-numcodecs==0.1.5 \
+    spikeinterface[full]==0.100.7
+
+RUN pip uninstall -y neo && \
+    git clone https://github.com/alejoe91/python-neo.git &&  \
+    cd python-neo && git checkout cf543aa7b85124193a8d1cf726a92de54b360026  && \
+    pip install --no-cache-dir . && \
+    cd ..
