@@ -244,8 +244,10 @@ NXF_VER=22.10.8 DATA_PATH=path/to/data_spikeglx RESULTS_PATH=path/to/results_spi
 
 # SLURM deployment
 
-To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the `nextflow` and `singularity` installed.
-To use cloud visualizations, follow the same steps descrived in the "Local deplyment" section and set the KACHERY environment variables.
+To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the 
+[Nextflow](https://www.nextflow.io/docs/latest/install.html) and Singularity/Apptainer installed. 
+To use Figurl cloud visualizations, follow the same steps descrived in the 
+[Local deployment - Requirements](#requirements) section and set the KACHERY environment variables.
 
 Then, you can submit the pipeline to the cluster similarly to the Local deplyment, 
 but wrapping the command into a script that can be launched with `sbatch`.
@@ -283,6 +285,7 @@ Then, you can submit the script to the cluster with:
 ```bash
 sbatch slurm_submit.sh
 ```
+
 
 # Create a custom layer for data ingestion
 
