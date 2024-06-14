@@ -39,7 +39,7 @@ nwb_subject_to_nwb_units_27 = channel.create()
 // capsule - Job Dispatch Ecephys
 process job_dispatch {
 	tag 'capsule-5832718'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 4
 	memory '32 GB'
@@ -81,7 +81,7 @@ process job_dispatch {
 // capsule - Preprocess Ecephys
 process preprocessing {
 	tag 'capsule-4923505'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 16
 	memory '64 GB'
@@ -125,7 +125,7 @@ process preprocessing {
 // capsule - Spikesort Kilosort2.5 Ecephys
 process spikesort_kilosort25 {
 	tag 'capsule-2633671'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:si-0.100.7'
 	containerOptions '--nv'
 	clusterOptions '--gres=gpu:1'
 	module 'cuda'
@@ -171,7 +171,7 @@ process spikesort_kilosort25 {
 // capsule - Postprocess Ecephys
 process postprocessing {
 	tag 'capsule-5473620'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 16
 	memory '128 GB'
@@ -216,7 +216,7 @@ process postprocessing {
 // capsule - Curate Ecephys
 process curation {
 	tag 'capsule-8866682'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 1
 	memory '8 GB'
@@ -257,7 +257,7 @@ process curation {
 // capsule - Unit Classifier Ecephys
 process unit_classifier {
 	tag 'capsule-3820244'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-unit-classifier:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-unit-classifier:si-0.100.7'
 
 	cpus 8
 	memory '64 GB'
@@ -298,7 +298,7 @@ process unit_classifier {
 // capsule - Visualize Ecephys
 process visualization {
 	tag 'capsule-6668112'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 4
 	memory '32 GB'
@@ -343,7 +343,7 @@ process visualization {
 // capsule - Collect Results Ecephys
 process results_collector {
 	tag 'capsule-4820071'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 4
 	memory '32 GB'
@@ -392,7 +392,7 @@ process results_collector {
 // capsule - NWB-Packaging-Subject-Capsule
 process nwb_subject {
 	tag 'capsule-9109637'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7'
 
 	cpus 4
 	memory '32 GB'
@@ -432,7 +432,7 @@ process nwb_subject {
 // capsule - NWB-Packaging-Units
 process nwb_units {
 	tag 'capsule-6946197'
-	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:latest'
+	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7'
 
 	cpus 4
 	memory '32 GB'
