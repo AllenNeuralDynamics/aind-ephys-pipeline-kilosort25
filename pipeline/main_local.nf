@@ -89,6 +89,7 @@ process job_dispatch {
 process preprocessing {
 	tag 'capsule-4923505'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
+	maxForks 1
 
 	input:
 	path 'capsule/data/' from job_dispatch_to_preprocessing_1.flatten()
@@ -130,6 +131,7 @@ process spikesort_kilosort25 {
 	tag 'capsule-2633671'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:si-0.100.7'
 	containerOptions '--gpus all'
+	maxForks 1
 
 	input:
 	path 'capsule/data/' from preprocessing_to_spikesort_kilosort25_14
@@ -151,7 +153,7 @@ process spikesort_kilosort25 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort25.git" capsule-repo
-	git -C capsule-repo checkout b1188fb9857eff4d4d6af8e35fd8f7e042cb7277 --quiet
+	git -C capsule-repo checkout 9b028a28c6ae7142e76c6e6476a67561a16bb469 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -169,6 +171,7 @@ process spikesort_kilosort25 {
 process postprocessing {
 	tag 'capsule-5473620'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
+	maxForks 1
 
 	input:
 	path 'capsule/data/' from spikesort_kilosort25_to_postprocessing_5.collect()

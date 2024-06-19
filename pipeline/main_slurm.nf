@@ -154,7 +154,7 @@ process spikesort_kilosort25 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort25.git" capsule-repo
-	git -C capsule-repo checkout b1188fb9857eff4d4d6af8e35fd8f7e042cb7277 --quiet
+	git -C capsule-repo checkout 9b028a28c6ae7142e76c6e6476a67561a16bb469 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 

@@ -186,6 +186,7 @@ In Nextflow, the The `-resume` argument enables the caching mechanism.
 
 # Local deployment
 
+
 ## Requirements
 
 To deploy locally, you need to install:
@@ -246,6 +247,12 @@ NXF_VER=22.10.8 DATA_PATH=path/to/data_spikeglx RESULTS_PATH=path/to/results_spi
     nextflow -C nextflow_local.config run main_local.nf --n_jobs 16 \
     --job_dispatch_args "--input spikeglx" --preprocessing_args "--debug --debug-duration 120"
 ```
+
+## Caveats of local deployment
+
+While the pipeline can be deployed locally on a workstation or a server, it is recommended to to deploy it on a cluster or on a batch processing system (e.g., AWS batch).
+When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) are not parallelized to avoid overloading the system.
+This is achieved by setting the `maxForks 1` directive in such processes.
 
 
 # SLURM deployment
