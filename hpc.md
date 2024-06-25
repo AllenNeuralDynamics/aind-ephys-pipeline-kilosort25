@@ -6,9 +6,9 @@ and change the Slurm and job parameters in the file `submit_nwb.slrm`.
 
 Here are the important environmental variables that need to be changed. 
 
-DATA_PATH
-RESULTS_PATH
-WORKDIR
+-DATA_PATH
+-RESULTS_PATH
+-WORKDIR
 
 Currently, the pipeline is tested to run on NWB data format. We will add more options in the future. 
 
