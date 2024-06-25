@@ -265,6 +265,9 @@ To use Figurl cloud visualizations, follow the same steps descrived in the
 Then, you can submit the pipeline to the cluster similarly to the Local deplyment, 
 but wrapping the command into a script that can be launched with `sbatch`.
 
+To avoid downloading the Docker images in the current location (usually the home folder),
+you can set the `NXF_SINGULARITY_CACHEDIR` environment variable to a different location.
+
 You can use the `slurm_submit.sh` script as a template to submit the pipeline to your cluster.
 
 ```bash
