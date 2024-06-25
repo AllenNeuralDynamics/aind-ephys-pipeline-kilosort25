@@ -416,7 +416,7 @@ process nwb_subject {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Subject_Capsule.git" capsule-repo
-    git -C capsule-repo checkout 004887780040094bbde60756909e5a3f2c99bdf1 --quiet
+    git -C capsule-repo checkout 0b3ab99d1514a7627e342943452cf48b9d7147f7 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
