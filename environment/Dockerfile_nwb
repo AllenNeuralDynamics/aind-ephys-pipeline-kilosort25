@@ -15,8 +15,16 @@ RUN pip install -U --no-cache-dir \
     wavpack-numcodecs==0.1.5 \
     spikeinterface[full]==0.100.7
 
+# NEO installation from source with a SpikeGLX fix
 RUN pip uninstall -y neo && \
     git clone https://github.com/alejoe91/python-neo.git &&  \
     cd python-neo && git checkout cf543aa7b85124193a8d1cf726a92de54b360026  && \
     pip install --no-cache-dir . && \
     cd ..
+
+# SpikeInterface installation from source with an NWB fix (#3059)
+RUN pip uninstall -y spikeinterface && \
+git clone https://github.com/alejoe91/spikeinterface.git &&  \
+cd spikeinterface && git checkout bed769214302a6ea10c44164f79edb5eaaf55f33  && \
+pip install --no-cache-dir . && \
+cd ..

@@ -113,7 +113,7 @@ process preprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing.git" capsule-repo
-	git -C capsule-repo checkout 23acc0e17e21e77a5e4a8900bae8218a085adf81 --quiet
+	git -C capsule-repo checkout eb3bb2a621d06312be738d6bc19f4e60b7218c0a --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -153,7 +153,7 @@ process spikesort_kilosort25 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort25.git" capsule-repo
-	git -C capsule-repo checkout 9b028a28c6ae7142e76c6e6476a67561a16bb469 --quiet
+	git -C capsule-repo checkout 8ad5241757e02effa84a05c5022b17cde01eadff --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -196,7 +196,7 @@ process postprocessing {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-postprocessing.git" capsule-repo
-	git -C capsule-repo checkout eb984feee7d7490f1781cf7670ebb72196ccabfe --quiet
+	git -C capsule-repo checkout d3c43c7006e7c6b5e100880c71e3d14c3e9d1fd2 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -434,7 +434,7 @@ process nwb_units {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Units.git" capsule-repo
-	git -C capsule-repo checkout f8daa9dd54757dfe28869343d91613687b882126 --quiet
+	git -C capsule-repo checkout 461b6daba55d5f834d0414d58cfca422ffedf465 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
