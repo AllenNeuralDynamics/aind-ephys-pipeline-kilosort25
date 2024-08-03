@@ -1,0 +1,30 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --mem=192GB
+#SBATCH --gres=gpu:1
+#SBATCH --partition=kempner_dev
+#SBATCH --account=kempner_dev
+#SBATCH --time=8:00:00
+#SBATCH --output=aind-%N.%x.%j.out
+#SBATCH --error=aind-%N.%x.%j.err
+
+
+module load Mambaforge/23.11.0-fasrc01
+module load matlab
+mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow_conda
+
+
+PIPELINE_PATH="/n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline-kilosort25/pipeline"
+DATA_PATH="/n/holylfs06/LABS/kempner_shared/Everyone/ephys/data/sample_data_1/dir1"
+RESULTS_PATH="Output_dir1"
+WORKDIR="/n/holyscratch01/kempner_dev/Users/bdesinghu/aind_ephys_spike_dir1"
+NXF_SINGULARITY_CACHEDIR="/n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline-base_si-0.100.7.sif"
+
+DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow  -C $PIPELINE_PATH/nextflow_slurm.config \
+    -log $RESULTS_PATH/nextflow.log \
+    run $PIPELINE_PATH/main_slurm.nf \
+    -work-dir $WORKDIR \
+    --n_jobs 4 \
+    --job_dispatch_args "--input spikeglx"  
+   

@@ -42,7 +42,7 @@ process job_dispatch {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 4
-	memory '32 GB'
+	memory '128 GB'
 	time '1h'
 
 	input:
@@ -65,7 +65,7 @@ process job_dispatch {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
-	git -C capsule-repo checkout 87638e201788213cdbd2b18e8e2d692cfe0889b8 --quiet
+	git -C capsule-repo checkout 5d76d29ba2817cfc3bb6b35a06ce94cae22b815a --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -84,7 +84,7 @@ process preprocessing {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 16
-	memory '64 GB'
+	memory '128 GB'
 	time '4h'
 
 	input:
@@ -131,7 +131,7 @@ process spikesort_kilosort25 {
 	module 'cuda'
 
 	cpus 16
-	memory '64 GB'
+	memory '128 GB'
 	time '4h'
 
 	input:
@@ -219,7 +219,7 @@ process curation {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 1
-	memory '8 GB'
+	memory '32 GB'
 	time '10min'
 
 	input:
@@ -260,7 +260,7 @@ process unit_classifier {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-unit-classifier:si-0.100.7'
 
 	cpus 8
-	memory '64 GB'
+	memory '128 GB'
 	time '30min'
 
 	input:
@@ -301,7 +301,7 @@ process visualization {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 4
-	memory '32 GB'
+	memory '128 GB'
 	time '2h'
 
 	input:
@@ -346,7 +346,7 @@ process results_collector {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7'
 
 	cpus 4
-	memory '32 GB'
+	memory '128 GB'
 	time '1h'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
@@ -395,7 +395,7 @@ process nwb_subject {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7'
 
 	cpus 4
-	memory '32 GB'
+	memory '128 GB'
 	time '10min'
 
 	input:
@@ -435,7 +435,7 @@ process nwb_units {
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7'
 
 	cpus 4
-	memory '32 GB'
+	memory '128 GB'
 	time '2h'
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
