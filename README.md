@@ -1,8 +1,8 @@
 
 
-# Electrophysiology Analysis on Kempner's HPC Cluster
+# Electrophysiology Analysis on Kempner AI Cluster
 
-This document outlines the workflow for performing electrophysiology analysis using Kilosort2.5 on the computational resources provided by Kempner's HPC. This pipeline is a derivative of the one available at https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.
+This document outlines the workflow for performing electrophysiology analysis using Kilosort2.5 on Kempner AI cluster. This pipeline is a derivative of the one available at https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.
 
 The analysis consists of several steps, as illustrated in the flowchart: preprocessing, spike sorting, post-processing, and visualization. All these steps are executed through the Nextflow workflow tool. While the pipeline can handle various data formats like aind, nwb, and spikeglx, this guide will focus specifically on spikeglx data.
 
