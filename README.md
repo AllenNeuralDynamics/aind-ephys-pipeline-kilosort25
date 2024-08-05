@@ -1,5 +1,101 @@
 # AIND Ephys Pipeline with Kilosort2.5
-## aind-ephys-pipeline-kilosort25
+
+## Electrophysiology Analysis with Kilosort2.5 on Kempner's HPC
+
+This document outlines the workflow for performing electrophysiology analysis using Kilosort2.5 on the computational resources provided by Kempner's HPC. This pipeline is a derivative of the one available at https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.
+
+The analysis process consists of several steps, as illustrated in the flowchart: preprocessing, spike sorting, post-processing, and visualization. All these steps are executed through the Nextflow workflow tool. While the pipeline can handle various data formats like aind, nwb, and spikeglx, this guide will focus specifically on spikeglx data.
+
+ 
+
+### Preparing Input Data
+
+Transferring Data to the Cluster: Begin by transferring your experimental data to the cluster. Ensure each experiment's data resides in its own dedicated directory. The expected data structure is:
+
+```
+data_dir
+  input data
+```
+
+### Slurm Job file
+
+Copying the Job Script: Locate the relevant job script (spike_sort_slurm.slrm) from the shared directory and copy it to a designated job directory on the cluster. This job directory can be situated within your lab's allocated space.
+
+```
+cp  /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline-kilosort25/pipeline/spike_sort_slurm.slrm .
+```
+
+Alternative - Cloning the Repository (Optional): If preferred, you can clone the entire Git repository containing the pipeline and edit the Slurm job file:
+
+```
+/n/holylabs/LABS/kempner_dev/Lab/projects/ephys/aind-ephys-pipeline-kilosort25/pipeline
+```
+
+### Setting Up Directory Paths
+
+Several crucial environment variables need modification within the spike_sort_slurm.slrm script:
+
+- DATA_PATH: Specifies the location of your input data.
+- RESULTS_PATH: Defines where the pipeline will store the generated output files.
+- WORK_DIR: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
+
+
+#### Modifying Slurm Job Options
+
+Within the job script, ensure you provide the appropriate partition and account names for your allocation on the HPC system. Here's an example:
+
+
+
+In the job file, provide the correct partition and account names. 
+
+```
+#SBATCH --partition=<PARTITION_NAME>
+#SBATCH --account=<ACCOUNT_NAME>
+```
+
+#### Submitting the Job
+
+Once you've made the necessary adjustments, submit the job script using the sbatch command:
+
+
+
+```
+sbatch spike_sort_slurm.slrm
+```
+
+### Monitoring Job Status
+
+To track the progress of your submitted job, use the squeue command with your username:
+
+```
+squeue -u <username>
+```
+Obtaining Results
+
+Upon successful job completion, the output directory will contain various files:
+
+```
+curated/               postprocessed/  processing.json  visualization_output.json
+data_description.json  preprocessed/   spikesorted/
+```
+
+The visualization_output.json file provides visualizations of timeseries, drift maps, and the sorting output using Figurl. You can refer to the provided sample visualization for reference.
+
+
+[sorting_summary](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://3b0465d83dab9c14210477b5bc690c94c2f0c797&s={%22sortingCuration%22:%22gh://AllenNeuralDynamics/ephys-sorting-manual-curation/main/ecephys_session/block0_imec0.ap_recording1_group1/kilosort2_5/curation.json%22}&label=ecephys_session%20-%20block0_imec0.ap_recording1_group1%20-%20kilosort2_5%20-%20Sorting%20Summary)
+
+[timeseries](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://f038c09c3465a22bda53e6917e1cfa7ad0afd6f7&label=ecephys_session%20-%20block0_imec0.ap_recording1_group0)
+
+
+### Further Analysis and Manual Curation
+
+For manual curation and annotation of your data, you can leverage the Jupyter notebook available as Spikeinterface.ipynb.
+
+Manual curation and annotation can be done with the help of Jupyter notebook available in `Spikeinterface.ipynb`. 
+
+
+
+### More details about the pipeline 
 
 Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/MouseLand/Kilosort/tree/v2.5) via [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
 
@@ -17,302 +113,3 @@ The pipeline is based on [Nextflow](https://www.nextflow.io/) and it includes th
   - [session and subject](https://github.com/AllenNeuralDynamics/NWB_Packaging_Subject_Capsule)
   - [units](https://github.com/AllenNeuralDynamics/NWB_Packaging_Units)
 
-Each step is run in a container and can be deployed on several platforms. 
-See the [Local deplyment](#local-deployment) and [SLURM deployment](#slurm-deployment) sections for more details.
-
-# Input
-
-Currently, the pipeline supports the following input data types:
-
-- `aind`: data ingestion used at AIND. The input folder must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
-- `spikeglx`: the input folder should be a SpikeGLX folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
-- (WIP) `nwb`: the input folder should contain a single NWB file (both HDF5 and Zarr backend are supported).
-
-For more information on how to select the input mode and set additional parameters,
-see the [Local deployment - Additional parameters](#additional-parameters) section.
-
-# Output
-
-The output of the pipeline is saved to the `RESULTS_PATH`. 
-Since the output is produced using SpikeInterface, it is recommended to go through 
-[its documentation](https://spikeinterface.readthedocs.io/en/0.100.7/) to understand how to easily 
-load and interact with the data:
-
-The output includes the following files and folders:
-
-**`preprocessed`**
-
-This folder contains the output of preprocessing, including preprocessed JSON files associated to each stream and 
-motion folders containing the estimated motion.
-The preprocessed JSON files can be used to re-instantiate the recordings, provided that the raw data folder is 
-mapped to the same location as the input of the pipeline.
-
-In this case, the preprocessed recording can be loaded as a `spikeinterface.BaseRecording` with:
-```python
-import spikeinterface as si
-
-recording_preprocessed = si.load_extractor("path-to-preprocessed.json", base_folder="path-to-raw-data-parent")
-```
-
-The motion folders can be loaded as:
-```python
-import spikeinterface.preprocessing as spre
-
-motion = spre.load_motion("path-to-motion-folder")
-```
-They include the `motion`, `temporal_bins`, and `spatial_bins` fields, which can be used to visualize the
-estimated motion.
-
-**`spikesorted`**
-
-This folder contains the raw spike sorting outputs from Kilosort2.5 for each stream.
-
-It can be loaded as a `spikeinterface.BaseSorting` with:
-```python
-import spikeinterface as si
-
-sorting_raw = si.load_extractor("path-to-spikesorted-folder")
-```
-
-**`postprocessed`**
-
-This folder contains the output of the post-processing for each stream. It can be loaded as a 
-`spikeinterface.WaveformExtractor` with:
-```python
-import spikeinterface as si
-
-waveform_extractor = si.load_waveforms("path-to-postprocessed-folder", with_recording=False)
-```
-
-The `waveform_extractor` includes many computed extensions. This example shows how to load some of them:
-```python
-unit_locations = we.load_extension("unit_locations").get_data()
-# unit_locations is a np.array with the estimated locations
-
-qm = we.load_extension("quality_metrics").get_data()
-# qm is a pandas.DataFrame with the computed quality metrics
-```
-
-**`curated`**
-
-This folder contains the curated spike sorting outputs, after unit deduplication, quality-metric curation 
-and automatic unit classification.
-
-It can be loaded as a `spikeinterface.BaseSorting` with:
-```python
-import spikeinterface as si
-
-sorting_curated = si.load_extractor("path-to-curated-folder")
-```
-
-The `sorting_curated` object contains the following curation properties (which can be retrieved with 
-`sorting_curated.get_property(property_name)`):
-
-- `default_qc`: `True` if the unit passes the quality-metric-based curation, `False` otherwise
-- `decoder_label`: either `noise`, `MUA` or `SUA`
-
-**`nwb`**
-
-This folder contains the generated NWB files.
-
-**`visualization_output.json`**
-
-This JSON file containes the generated Figurl links for each stream, including a `timeseries` and a `sorting_summary` 
-view.
-
-**`processing.json`**
-
-This JSON file logs all the processing steps, parameters, and execution times.
-
-**`nextflow`**
-
-All files generated by Nextflow are saved here
-
-
-# Parameters
-
-Some steps of the pipeline accept additional parameters, that can be passed as follows:
-
-```bash
---{step_name}_args "{args}"
-```
-
-The steps that accept additional arguments are:
-
-### `job_dispatch_args`:
-
-```bash
-  --concatenate         Whether to concatenate recordings (segments) or not. Default: False
-  --input {aind,spikeglx,nwb}
-                        Which 'loader' to use. Default 'aind'
-```
-
-- `aind`: data ingestion used at AIND. The `DATA_PATH` must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
-- `spikeglx`: the `DATA_PATH` should contain a SpikeGLX saved folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
-- (WIP) `nwb`: the `DATA_PATH` should contain an NWB file (both HDF5 and Zarr backend are supported).
-
-### `preprocessing_args`:
-
-```bash
-  --debug               Whether to run in DEBUG mode
-  --denoising {cmr,destripe}
-                        Which denoising strategy to use. Can be 'cmr' or 'destripe'. Default 'cmr'
-  --no-remove-out-channels
-                        Whether to remove out channels
-  --no-remove-bad-channels
-                        Whether to remove bad channels
-  --max-bad-channel-fraction MAX_BAD_CHANNEL_FRACTION
-                        Maximum fraction of bad channels to remove. If more than this fraction, processing is skipped
-  --motion {skip,compute,apply}
-                        How to deal with motion correction. Can be 'skip', 'compute', or 'apply'. Default 'compute'
-  --motion-preset {nonrigid_accurate,kilosort_like,nonrigid_fast_and_accurate}
-                        What motion preset to use. Can be 'nonrigid_accurate', 'kilosort_like', or 'nonrigid_fast_and_accurate'. Default "nonrigid_fast_and_accurate"
-  --debug-duration DEBUG_DURATION
-                        Duration of clipped recording in debug mode. Default is 30 seconds. Only used if debug is enabled
-```
-
-
-### `nwb_subject_args`:
-
-```bash
-  --backend {hdf5,zarr}
-                        NWB backend. It can be either 'hdf5' or 'zarr'. Default 'zarr'
-
-```
-
-
-In Nextflow, the The `-resume` argument enables the caching mechanism.
-
-
-# Local deployment
-
-
-## Requirements
-
-To deploy locally, you need to install:
-
-- `nextflow`
-- `docker`
-- `figurl` (optional, for cloud visualization)
-
-Please checkout the [Nextflow](https://www.nextflow.io/docs/latest/install.html) and [Docker](https://docs.docker.com/engine/install/) installation instructions.
-
-To install and configure `figurl`, you need to follow these instructions to setup [`kachery-cloud`]():
-
-1. On your local machine, run `pip install kachery-cloud`
-2. Run `kachery-cloud-init`, open the printed URL link and login with your GitHub account
-3. Go to `https://kachery-gateway.figurl.org/?zone=default` and create a new Client:
-  - Click on the `Client` tab on the left
-  - Add a new client (you can choose any label)
-4. Set kachery-cloud credentials on your local machine:
-  - Click on the newly created client
-  - Set the `KACHERY_CLOUD_CLIENT_ID` environment variable to the `Client ID` content
-  - Set the `KACHERY_CLOUD_PRIVATE_KEY` environment variable to the `Ptivate Key` content
-  - (optional) If using a custom Kachery zone, set `KACHERY_ZONE` environment variable to your zone
-
-By default, `kachery-cloud` will use the `default` zone, which is hosted by the Flatiron institute.
-If you plan to use this service extensively, it is recommended to 
-[create your own kachery zone](https://github.com/flatironinstitute/kachery-cloud/blob/main/doc/create_kachery_zone.md).
-
-
-## Run
-
-Clone this repo (`git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.git`) and go to the 
-`pipeline` folder. You will find a `main_local.nf`. This nextflow script is accompanied by the 
-`nextflow_local.config` and can run on local workstations/machines.
-
-To invoke the pipeline you can run the following command:
-
-```bash
-NXF_VER=22.10.8 DATA_PATH=$PWD/../data RESULTS_PATH=$PWD/../results \
-    nextflow -C nextflow_local.config run main_local.nf \
-    -log $RESULTS_PATH/nextflow/nextflow.log \
-    --n_jobs 8 -resume
-```
-
-The `DATA_PATH` specifies the folder where the input files are located. 
-The `RESULT_PATH` points to the output folder, where the data will be saved.
-The `--n_jobs` argument specifies the number of parallel jobs to run.
-
-Additional parameters can be passed as described in the [Parameters](#parameters) section.
-
-
-## Example run command
-
-As an example, here is how to run the pipeline on a SpikeGLX dataset in debug mode 
-on a 120-second snippet of the recording with 16 jobs:
-
-```bash
-NXF_VER=22.10.8 DATA_PATH=path/to/data_spikeglx RESULTS_PATH=path/to/results_spikeglx \
-    nextflow -C nextflow_local.config run main_local.nf --n_jobs 16 \
-    --job_dispatch_args "--input spikeglx" --preprocessing_args "--debug --debug-duration 120"
-```
-
-## Caveats of local deployment
-
-While the pipeline can be deployed locally on a workstation or a server, it is recommended to to deploy it on a cluster or on a batch processing system (e.g., AWS batch).
-When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) are not parallelized to avoid overloading the system.
-This is achieved by setting the `maxForks 1` directive in such processes.
-
-
-# SLURM deployment
-
-To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the 
-[Nextflow](https://www.nextflow.io/docs/latest/install.html) and Singularity/Apptainer installed. 
-To use Figurl cloud visualizations, follow the same steps descrived in the 
-[Local deployment - Requirements](#requirements) section and set the KACHERY environment variables.
-
-Then, you can submit the pipeline to the cluster similarly to the Local deplyment, 
-but wrapping the command into a script that can be launched with `sbatch`.
-
-To avoid downloading the Docker images in the current location (usually the home folder),
-you can set the `NXF_SINGULARITY_CACHEDIR` environment variable to a different location.
-
-You can use the `slurm_submit.sh` script as a template to submit the pipeline to your cluster.
-
-```bash
-#!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --mem=4GB
-#SBATCH --time=2:00:00
-### change {your-partition} to the partition/queue on your cluster
-#SBATCH --partition={your-partition}
-
-
-# modify this section to make the nextflow command available to your environment
-# e.g., using a conda environment with nextflow installed
-conda activate env_nf
-
-PIPELINE_PATH="path-to-your-cloned-repo"
-DATA_PATH="path-to-data-folder"
-RESULTS_PATH="path-to-results-folder"
-WORKDIR="path-to-large-workdir"
-
-NXF_VER=22.10.8 DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow \
-    -C $PIPELINE_PATH/pipeline/nextflow_slurm.config \
-    -log $RESULTS_PATH/nextflow/nextflow.log \
-    run $PIPELINE_PATH/pipeline/main_slurm.nf \
-    -work-dir $WORKDIR \
-    --preprocessing_args "--debug --debug-duration 120" \ # additional parameters
-    -resume
-```
-
-You should change the `--partition` parameter to match the partition you want to use on your cluster and point to the correct paths and parameters.
-
-Then, you can submit the script to the cluster with:
-
-```bash
-sbatch slurm_submit.sh
-```
-
-
-# Create a custom layer for data ingestion
-
-The default job-dispatch step only supports loading data 
-from AIND folders, SpikeGLX folders, and NWB files.
-
-To ingest other types of data, you can create a similar repo and modify the way that the job list is created 
-(see the [job dispatch README](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/blob/main/README.md) for more details).
-
-Then you can create a modified `main_local-slurm.nf` `job_dispatch` process to point to your custom job dispatch repo.
