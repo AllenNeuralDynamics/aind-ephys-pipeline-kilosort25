@@ -37,7 +37,7 @@ git clone https://github.com/KempnerInstitute/aind-ephys-pipeline-kilosort25
 
 ### Setting Up Directory Paths
 
-Several crucial environment variables need modification within the spike_sort_slurm.slrm script:
+The following environment variables need modification within the spike_sort_slurm.slrm script:
 
 - **DATA_PATH**: Specifies the location of your input data.
 - **RESULTS_PATH**: Defines where the pipeline will store the generated output files.
