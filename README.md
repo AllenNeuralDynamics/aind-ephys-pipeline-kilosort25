@@ -1,6 +1,6 @@
 
 
-# Electrophysiology Analysis with Kilosort2.5 on Kempner's HPC
+# Electrophysiology Analysis on Kempner's HPC Cluster
 
 This document outlines the workflow for performing electrophysiology analysis using Kilosort2.5 on the computational resources provided by Kempner's HPC. This pipeline is a derivative of the one available at https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.
 
