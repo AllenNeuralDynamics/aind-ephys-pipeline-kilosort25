@@ -32,7 +32,7 @@ cp  /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline
 Alternative - Cloning the Repository (Optional): If preferred, you can clone the entire Git repository containing the pipeline and edit the Slurm job file:
 
 ```
-/n/holylabs/LABS/kempner_dev/Lab/projects/ephys/aind-ephys-pipeline-kilosort25/pipeline
+git clone https://github.com/KempnerInstitute/aind-ephys-pipeline-kilosort25
 ```
 
 ### Setting Up Directory Paths
