@@ -15,7 +15,10 @@ Transferring Data to the Cluster: Begin by transferring your experimental data t
 
 ```
 data_dir
-  input data
+└── 20240805_M100_4W50_g0_imec0
+    ├── 20240805_M100_4W50_g0_t0.imec0.ap.bin
+    └── 20240805_M100_4W50_g0_t0.imec0.ap.meta
+
 ```
 
 ### Slurm Job file
@@ -36,16 +39,14 @@ Alternative - Cloning the Repository (Optional): If preferred, you can clone the
 
 Several crucial environment variables need modification within the spike_sort_slurm.slrm script:
 
-- DATA_PATH: Specifies the location of your input data.
-- RESULTS_PATH: Defines where the pipeline will store the generated output files.
-- WORK_DIR: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
+- **DATA_PATH**: Specifies the location of your input data.
+- **RESULTS_PATH**: Defines where the pipeline will store the generated output files.
+- **WORK_DIR**: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
 
 
 #### Modifying Slurm Job Options
 
 Within the job script, ensure you provide the appropriate partition and account names for your allocation on the HPC system. Here's an example:
-
-
 
 In the job file, provide the correct partition and account names. 
 
@@ -54,11 +55,16 @@ In the job file, provide the correct partition and account names.
 #SBATCH --account=<ACCOUNT_NAME>
 ```
 
+In addition, add partition specifific for each job through clusterOptions in **nextflow_slurm.config** 
+
+```
+clusterOptions = ' -p <partition_name> -A <account_name> --constraint=intel'
+```
+The nextflow will start all the processes (slurm jobs) in the above parition and account. Without any field in the clusterOptions, the job will utilize the default partition and account. Each process uses the resources set in the file `main_slurm.nf`. 
+
 #### Submitting the Job
 
 Once you've made the necessary adjustments, submit the job script using the sbatch command:
-
-
 
 ```
 sbatch spike_sort_slurm.slrm
@@ -71,7 +77,7 @@ To track the progress of your submitted job, use the squeue command with your us
 ```
 squeue -u <username>
 ```
-Obtaining Results
+### Obtaining Results
 
 Upon successful job completion, the output directory will contain various files:
 
@@ -83,20 +89,21 @@ data_description.json  preprocessed/   spikesorted/
 The visualization_output.json file provides visualizations of timeseries, drift maps, and the sorting output using Figurl. You can refer to the provided sample visualization for reference.
 
 
-[sorting_summary](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://3b0465d83dab9c14210477b5bc690c94c2f0c797&s={%22sortingCuration%22:%22gh://AllenNeuralDynamics/ephys-sorting-manual-curation/main/ecephys_session/block0_imec0.ap_recording1_group1/kilosort2_5/curation.json%22}&label=ecephys_session%20-%20block0_imec0.ap_recording1_group1%20-%20kilosort2_5%20-%20Sorting%20Summary)
+[sorting_summary](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://3b0465d83dab9c14210477b5bc690c94c2f0c797&s={%22sortingCuration%22:%22gh://AllenNeuralDynamics/ephys-sorting-manual-curation/main/ecephys_session/block0_imec0.ap_recording1_group1/kilosort2_5/curation.json%22}&label=ecephys_session%20-%20block0_imec0.ap_recording1_group1%20-%20kilosort2_5%20-%20Sorting%20Summary): spike sorting results for visualization and curation
 
-[timeseries](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://f038c09c3465a22bda53e6917e1cfa7ad0afd6f7&label=ecephys_session%20-%20block0_imec0.ap_recording1_group0)
+[timeseries](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://f038c09c3465a22bda53e6917e1cfa7ad0afd6f7&label=ecephys_session%20-%20block0_imec0.ap_recording1_group0): Time series results of sorted spikes. 
 
 
 ### Further Analysis and Manual Curation
 
-For manual curation and annotation of your data, you can leverage the Jupyter notebook available as Spikeinterface.ipynb.
+For manual curation and annotation of your data, you can leverage the Jupyter notebook available as Spikeinterface.ipynb that is available inside the directory pipeline. 
 
-Manual curation and annotation can be done with the help of Jupyter notebook available in `Spikeinterface.ipynb`. 
+```
+cp  /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline-kilosort25/pipeline/Spikeinterface.ipynb .
+```
 
 
-
-### More details about the pipeline 
+### Further details on the pipeline and the links to repositories
 
 Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/MouseLand/Kilosort/tree/v2.5) via [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
 
