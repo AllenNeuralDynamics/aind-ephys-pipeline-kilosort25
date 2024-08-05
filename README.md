@@ -6,7 +6,8 @@ This document outlines the workflow for performing electrophysiology analysis us
 
 The analysis process consists of several steps, as illustrated in the flowchart: preprocessing, spike sorting, post-processing, and visualization. All these steps are executed through the Nextflow workflow tool. While the pipeline can handle various data formats like aind, nwb, and spikeglx, this guide will focus specifically on spikeglx data.
 
- <img src="https://github.com/dmbala/scrrna-wb/blob/master/Figs/scrna-infrastructure-1.jpg">
+ <img src="https://raw.githubusercontent.com/KempnerInstitute/aind-ephys-pipeline-kilosort25/main/Fig/Flowchart-ephys-spike-kilosort.svg" width="400"/>
+ 
 
 ### Preparing Input Data
 
