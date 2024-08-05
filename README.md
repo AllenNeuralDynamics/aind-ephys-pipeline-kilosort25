@@ -46,16 +46,14 @@ The following environment variables need modification within the spike_sort_slur
 
 #### Modifying Slurm Job Options
 
-Within the job script, ensure you provide the appropriate partition and account names for your allocation on the HPC system. Here's an example:
-
-In the job file, provide the correct partition and account names. 
+Within the job script, ensure you provide the appropriate partition and account names for your allocation on the Kempner AI cluster. 
 
 ```
 #SBATCH --partition=<PARTITION_NAME>
 #SBATCH --account=<ACCOUNT_NAME>
 ```
 
-In addition, add partition specifific for each job through clusterOptions in **nextflow_slurm.config** 
+In addition, change the clusterOptions in **nextflow_slurm.config** 
 
 ```
 clusterOptions = ' -p <partition_name> -A <account_name> --constraint=intel'
