@@ -85,6 +85,7 @@ Upon successful job completion, the output directory will contain various files:
 curated/               postprocessed/  processing.json  visualization_output.json
 data_description.json  preprocessed/   spikesorted/
 ```
+### Visualization
 
 The visualization_output.json file provides visualizations of timeseries, drift maps, and the sorting output using Figurl. You can refer to the provided sample visualization for reference.
 
