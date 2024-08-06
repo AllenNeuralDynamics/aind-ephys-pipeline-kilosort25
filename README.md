@@ -24,8 +24,8 @@ Cluster.
 2. Obtain the pipeline and Slurm scripts
 3. Edit the scripts and config files
 4. Submit the Slurm job
-5.  Results and visualization
-6.  Further Analysis
+5. Results and visualization
+6. Further Analysis
 
 ### 1. Preparing Input Data
 
@@ -47,7 +47,6 @@ Clone the repository on the cluster.
 git clone https://github.com/KempnerInstitute/kilosort25-spike-sorting
 
 ```
-
 
 ### 3. Edit the Job and Config Files
 
@@ -92,14 +91,14 @@ Once you've made the necessary adjustments, submit the job script using the sbat
 sbatch spike_sort_slurm.slrm
 ```
 
-#### 4.a Monitoring Job Status
+
 
 To track the progress of your submitted job, use the squeue command with your username:
 
 ```
 squeue -u <username>
 ```
-### 5. Results
+### 5. Results and Visualization
 
 Upon successful job completion, the output directory will contain various files:
 
@@ -107,7 +106,7 @@ Upon successful job completion, the output directory will contain various files:
 curated/               postprocessed/  processing.json  visualization_output.json
 data_description.json  preprocessed/   spikesorted/
 ```
-#### 5.a Visualization
+
 
 The visualization_output.json file provides visualizations of timeseries, drift maps, and the sorting output using Figurl. You can refer to the provided sample visualization for reference.
 
@@ -117,7 +116,7 @@ The visualization_output.json file provides visualizations of timeseries, drift 
 [timeseries](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://f038c09c3465a22bda53e6917e1cfa7ad0afd6f7&label=ecephys_session%20-%20block0_imec0.ap_recording1_group0): Time series results of sorted spikes. 
 
 
-### Further Analysis and Manual Curation
+### 6. Further Analysis and Manual Curation
 
 For manual curation and annotation of your data, you can leverage the Jupyter notebook available as `spike_interface.ipynb` that is available inside the directory postprocess. 
 
@@ -125,8 +124,24 @@ For manual curation and annotation of your data, you can leverage the Jupyter no
 postprocess/spike_interface.ipynb
 ```
 
+#### Additional Pipeline Arguments
 
-### 6. Further details on the pipeline and the links to repositories
+These are the job arguments you can tune for a given job. 
+
+job_dispatch_args: 
+ --concatenate  
+ --input {aind,spikeglx,nwb}
+
+preprocessing_args: 
+ --denoising {cmr,destripe} 
+ --no-remove-out-channels 
+ --no-remove-bad-channels 
+ --max-bad-channel-fraction  
+ --motion {skip,compute,apply} 
+ --motion-preset
+
+
+### Further details on the pipeline and the links to repositories
 
 Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/MouseLand/Kilosort/tree/v2.5) via [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
 
