@@ -1,5 +1,5 @@
 
-# Ephys Spike Sorting Pipeline on Kempner AI Cluster
+# Neuropixel Ephys Spike Sorting Pipeline on Kempner AI Cluster
 
 This document outlines the workflow for performing spike sorting on electrophysiological recorded data using Kilosort2.5 method on Kempner AI cluster. This pipeline is a derivative of the one available at [Allen Neural Dynamics GitHub]( https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25).
 
