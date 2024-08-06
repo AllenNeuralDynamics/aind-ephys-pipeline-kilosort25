@@ -21,13 +21,9 @@ These are are major steps to run the nextflow pipeline on the Kempner AI
 Cluster.
 
 1. Prepare input data
-
 2. Obtain the pipeline and Slurm scripts
-
 3. Edit the scripts and config files
-
 4. Submit the Slurm job
-   
 5.  Results and visualization
 6.  Further Analysis
 
@@ -53,7 +49,7 @@ git clone https://github.com/KempnerInstitute/kilosort25-spike-sorting
 ```
 
 
-###3. Edit the Job and Config Files
+### 3. Edit the Job and Config Files
 
 The relevant job and config files are located in the directory `pipeline`. 
 
@@ -72,7 +68,7 @@ The following environment variables need modification within the `spike_sort_slu
 - **WORK_DIR**: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
 
 
-####3.b Modifying Slurm Job Options
+#### 3.b Modifying Slurm Job Options
 
 Within the job script, ensure you provide the appropriate partition and account names for your allocation on the Kempner AI cluster. 
 
@@ -88,7 +84,7 @@ clusterOptions = ' -p <partition_name> -A <account_name> --constraint=intel'
 ```
 The nextflow will start all the processes (slurm jobs) in the above parition and account. Without any field in the clusterOptions, the job will utilize the default partition and account. Each process uses the resources set in the file `main_slurm.nf`. The constraint `intel` will restrict the job to run on the intel cpus. 
 
-###4. Submitting the Job
+### 4. Submitting the Job
 
 Once you've made the necessary adjustments, submit the job script using the sbatch command:
 
@@ -103,7 +99,7 @@ To track the progress of your submitted job, use the squeue command with your us
 ```
 squeue -u <username>
 ```
-###5. Results
+### 5. Results
 
 Upon successful job completion, the output directory will contain various files:
 
@@ -130,7 +126,7 @@ postprocess/spike_interface.ipynb
 ```
 
 
-### Further details on the pipeline and the links to repositories
+### 6. Further details on the pipeline and the links to repositories
 
 Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/MouseLand/Kilosort/tree/v2.5) via [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
 
