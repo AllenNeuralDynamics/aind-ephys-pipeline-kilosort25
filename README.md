@@ -127,7 +127,7 @@ postprocess/spike_interface.ipynb
 #### Additional Pipeline Arguments
 
 These are the job arguments you can tune for a given job. 
-
+```
 job_dispatch_args: 
  --concatenate  
  --input {aind,spikeglx,nwb}
@@ -139,7 +139,7 @@ preprocessing_args:
  --max-bad-channel-fraction  
  --motion {skip,compute,apply} 
  --motion-preset
-
+```
 
 ### Further details on the pipeline and the links to repositories
 
