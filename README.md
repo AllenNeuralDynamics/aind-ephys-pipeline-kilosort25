@@ -83,6 +83,13 @@ clusterOptions = ' -p <partition_name> -A <account_name> --constraint=intel'
 ```
 The nextflow will start all the processes (slurm jobs) in the above parition and account. Without any field in the clusterOptions, the job will utilize the default partition and account. Each process uses the resources set in the file `main_slurm.nf`. The constraint `intel` will restrict the job to run on the intel cpus. 
 
+The following lines in the Slurm script define the software environment required to run the job: 
+```
+module load Mambaforge/23.11.0-fasrc01
+module load matlab/matlab/R2022b-fasrc01
+mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow_conda
+```
+
 ### 4. Submitting the Job
 
 Once you've made the necessary adjustments, submit the job script using the sbatch command:
