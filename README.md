@@ -86,11 +86,10 @@ The nextflow will start all the processes (slurm jobs) in the above parition and
 The following lines in the Slurm script define the software environment required to run the job: 
 ```
 module load Mambaforge/23.11.0-fasrc01
-module load matlab/matlab/R2022b-fasrc01
+module load matlab/R2022b-fasrc01
 mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow_conda
 ```
 It is okay to use the nextflow package in the above path. Alternatively, the nextflow package can be installed in the local directory. 
-
 
 
 ### 4. Submitting the Job
@@ -106,6 +105,8 @@ To track the progress of your submitted job, use the squeue command with your us
 ```
 squeue -u <username>
 ```
+
+
 ### 5. Results and Visualization
 
 Upon successful job completion, the output directory will contain various files:
