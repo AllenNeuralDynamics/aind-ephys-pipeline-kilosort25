@@ -89,6 +89,7 @@ module load Mambaforge/23.11.0-fasrc01
 module load matlab/matlab/R2022b-fasrc01
 mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow_conda
 ```
+It is okay to use the nextflow package in the above path. Alternatively, the nextflow package can be installed in the local directory. 
 
 ### 4. Submitting the Job
 
@@ -97,8 +98,6 @@ Once you've made the necessary adjustments, submit the job script using the sbat
 ```
 sbatch spike_sort_slurm.slrm
 ```
-
-
 
 To track the progress of your submitted job, use the squeue command with your username:
 
