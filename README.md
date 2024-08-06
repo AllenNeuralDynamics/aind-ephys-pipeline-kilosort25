@@ -91,6 +91,8 @@ mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow
 ```
 It is okay to use the nextflow package in the above path. Alternatively, the nextflow package can be installed in the local directory. 
 
+
+
 ### 4. Submitting the Job
 
 Once you've made the necessary adjustments, submit the job script using the sbatch command:
