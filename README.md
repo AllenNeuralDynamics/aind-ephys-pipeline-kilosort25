@@ -16,9 +16,22 @@ All these steps are executed through the Nextflow workflow tool. While the pipel
   <img src="https://raw.githubusercontent.com/KempnerInstitute/aind-ephys-pipeline-kilosort25/main/Fig/Flowchart-ephys-spike-kilosort.svg" />
 </p>
 
+## Slurm Job Submission
+
+These are are major steps to run the nextflow pipeline on the Kempner AI 
+Cluster.
+
+1. Prepare input data
+
+2. Obtain the pipeline and Slurm scripts
+
+3. Edit the scripts and config files
+
+4. Submit the Slurm job
+
 ### Preparing Input Data
 
-Transferring Data to the Cluster: Begin by transferring your experimental data to the cluster. Ensure each experiment's data resides in its own dedicated directory. The expected data structure is:
+Begin by transferring your experimental data to the cluster. Ensure each experiment's data resides in its own dedicated directory. The expected data structure is:
 
 ```
 data_dir
@@ -28,23 +41,29 @@ data_dir
 
 ```
 
-### Slurm Job file
+### Copy the Workfow and Job Files
 
-Copying the Job Script: Locate the relevant job script (spike_sort_slurm.slrm) from the shared directory and copy it to a designated job directory on the cluster. This job directory can be situated within your lab's allocated space.
-
-```
-cp  /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline-kilosort25/pipeline/spike_sort_slurm.slrm .
-```
-
-Alternative - Cloning the Repository (Optional): If preferred, you can clone the entire Git repository containing the pipeline and edit the Slurm job file:
+Clone the repository on the cluster. 
 
 ```
-git clone https://github.com/KempnerInstitute/aind-ephys-pipeline-kilosort25
+git clone https://github.com/KempnerInstitute/kilosort25-spike-sorting
+
 ```
 
-### Setting Up Directory Paths
 
-The following environment variables need modification within the spike_sort_slurm.slrm script:
+### Edit the Job and Config Files
+
+The relevant job and config files are located in the directory `pipeline`. 
+
+```
+cd kilosort25-spike-sorting/pipeline
+```
+
+Before submitting the job, the Slurm job file `spike_sort_slurm.slrm` and the nextflow configuration file `nextflow_slurm.config` need to be edited to specify the relevant directory paths and cluster resources. 
+
+#### Setting Up Directory Paths
+
+The following environment variables need modification within the `spike_sort_slurm.slrm` script:
 
 - **DATA_PATH**: Specifies the location of your input data.
 - **RESULTS_PATH**: Defines where the pipeline will store the generated output files.
@@ -56,8 +75,8 @@ The following environment variables need modification within the spike_sort_slur
 Within the job script, ensure you provide the appropriate partition and account names for your allocation on the Kempner AI cluster. 
 
 ```
-#SBATCH --partition=<PARTITION_NAME>
-#SBATCH --account=<ACCOUNT_NAME>
+#SBATCH --partition=<partition_name>
+#SBATCH --account=<account_name>
 ```
 
 In addition, change the clusterOptions in **nextflow_slurm.config** 
@@ -65,7 +84,7 @@ In addition, change the clusterOptions in **nextflow_slurm.config**
 ```
 clusterOptions = ' -p <partition_name> -A <account_name> --constraint=intel'
 ```
-The nextflow will start all the processes (slurm jobs) in the above parition and account. Without any field in the clusterOptions, the job will utilize the default partition and account. Each process uses the resources set in the file `main_slurm.nf`. 
+The nextflow will start all the processes (slurm jobs) in the above parition and account. Without any field in the clusterOptions, the job will utilize the default partition and account. Each process uses the resources set in the file `main_slurm.nf`. The constraint `intel` will restrict the job to run on the intel cpus. 
 
 #### Submitting the Job
 
