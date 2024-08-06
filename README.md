@@ -27,8 +27,11 @@ Cluster.
 3. Edit the scripts and config files
 
 4. Submit the Slurm job
+   
+5.  Results and visualization
+6.  Further Analysis
 
-### Preparing Input Data
+### 1. Preparing Input Data
 
 Begin by transferring your experimental data to the cluster. Ensure each experiment's data resides in its own dedicated directory. The expected data structure is:
 
@@ -40,7 +43,7 @@ data_dir
 
 ```
 
-### Copy the Workfow and Job Files
+###2. Copy the Workfow and Job Files
 
 Clone the repository on the cluster. 
 
@@ -50,7 +53,7 @@ git clone https://github.com/KempnerInstitute/kilosort25-spike-sorting
 ```
 
 
-### Edit the Job and Config Files
+###3. Edit the Job and Config Files
 
 The relevant job and config files are located in the directory `pipeline`. 
 
@@ -60,7 +63,7 @@ cd kilosort25-spike-sorting/pipeline
 
 Before submitting the job, the Slurm job file `spike_sort_slurm.slrm` and the nextflow configuration file `nextflow_slurm.config` need to be edited to specify the relevant directory paths and cluster resources. 
 
-#### Setting Up Directory Paths
+####3.a Setting Up Directory Paths
 
 The following environment variables need modification within the `spike_sort_slurm.slrm` script:
 
@@ -69,7 +72,7 @@ The following environment variables need modification within the `spike_sort_slu
 - **WORK_DIR**: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
 
 
-#### Modifying Slurm Job Options
+####3.b Modifying Slurm Job Options
 
 Within the job script, ensure you provide the appropriate partition and account names for your allocation on the Kempner AI cluster. 
 
@@ -85,7 +88,7 @@ clusterOptions = ' -p <partition_name> -A <account_name> --constraint=intel'
 ```
 The nextflow will start all the processes (slurm jobs) in the above parition and account. Without any field in the clusterOptions, the job will utilize the default partition and account. Each process uses the resources set in the file `main_slurm.nf`. The constraint `intel` will restrict the job to run on the intel cpus. 
 
-#### Submitting the Job
+###4. Submitting the Job
 
 Once you've made the necessary adjustments, submit the job script using the sbatch command:
 
@@ -93,14 +96,14 @@ Once you've made the necessary adjustments, submit the job script using the sbat
 sbatch spike_sort_slurm.slrm
 ```
 
-### Monitoring Job Status
+#### 4.a Monitoring Job Status
 
 To track the progress of your submitted job, use the squeue command with your username:
 
 ```
 squeue -u <username>
 ```
-### Obtaining Results
+###5. Results
 
 Upon successful job completion, the output directory will contain various files:
 
@@ -108,7 +111,7 @@ Upon successful job completion, the output directory will contain various files:
 curated/               postprocessed/  processing.json  visualization_output.json
 data_description.json  preprocessed/   spikesorted/
 ```
-### Visualization
+#### 5.a Visualization
 
 The visualization_output.json file provides visualizations of timeseries, drift maps, and the sorting output using Figurl. You can refer to the provided sample visualization for reference.
 
@@ -120,10 +123,10 @@ The visualization_output.json file provides visualizations of timeseries, drift 
 
 ### Further Analysis and Manual Curation
 
-For manual curation and annotation of your data, you can leverage the Jupyter notebook available as Spikeinterface.ipynb that is available inside the directory pipeline. 
+For manual curation and annotation of your data, you can leverage the Jupyter notebook available as `spike_interface.ipynb` that is available inside the directory postprocess. 
 
 ```
-cp  /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/aind-ephys-pipeline-kilosort25/pipeline/Spikeinterface.ipynb .
+postprocess/spike_interface.ipynb
 ```
 
 
