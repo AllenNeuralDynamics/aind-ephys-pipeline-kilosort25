@@ -9,7 +9,7 @@
 
 
 module load Mambaforge/23.11.0-fasrc01
-module load matlab/matlab/R2022b-fasrc01
+module load matlab/R2022b-fasrc01
 mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow_conda
 
 
