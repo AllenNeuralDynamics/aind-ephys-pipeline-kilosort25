@@ -27,6 +27,11 @@ Cluster.
 5. Results and visualization
 6. Further Analysis
 
+### 0. Environment Setup
+
+For users running on the cannon cluster, we have cached the containers required for the workflow in a shared directory. For external users, you can use the `environment/pull_singularity_containers.sh` script to pull local copies of 
+the required containers to a location of your choice. The alternative path can then be passed to the nextflow execution script through setting the environment variable `EPHYS_CONTAINER_PATH` to point to that directory.
+
 ### 1. Preparing Input Data
 
 Begin by transferring your experimental data to the cluster. Ensure each experiment's data resides in its own dedicated directory. The expected data structure is:
@@ -58,7 +63,7 @@ cd kilosort25-spike-sorting/pipeline
 
 Before submitting the job, the Slurm job file `spike_sort_slurm.slrm` and the nextflow configuration file `nextflow_slurm.config` need to be edited to specify the relevant directory paths and cluster resources. 
 
-####3.a Setting Up Directory Paths
+#### 3.a Setting Up Directory Paths
 
 The following environment variables need modification within the `spike_sort_slurm.slrm` script:
 
