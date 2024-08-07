@@ -8,6 +8,13 @@
 #SBATCH --error=kilosort-%N.%x.%j.err
 
 
+DATA_PATH="location_of_your_data_dir"
+WORK_DIR="location_of_your_scratch_directory"
+RESULTS_PATH="output"
+PIPELINE_PATH="./"
+
+INPUT_DATA_TYPE="spikeglx"
+
 if [[ -z $EPHYS_VERSION ]]; then
    EPHYS_VERSION="latest"
 fi
@@ -23,15 +30,6 @@ fi
 
 export KACHERY_CLOUD_DIR="/n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/cred"
 export KACHERY_ZONE="kempner"
-
-PIPELINE_PATH="./"
-#DATA_PATH="data_dir"
-DATA_PATH="data_dir"
-RESULTS_PATH="output"
-PIPELINE_PATH="./"
-WORK_DIR="scratch_location""
-
-INPUT_DATA_TYPE="spikeglx"
 
 CONTAINER_DIR=$CONTAINER_DIR DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow  -C $PIPELINE_PATH/nextflow_slurm.config \
     -log $RESULTS_PATH/nextflow.log \
