@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=128GB
-#SBATCH --partition=<parition_name> 
+#SBATCH --partition=<parition_name>
 #SBATCH --account=<account_name> 
 #SBATCH --time=8:00:00
 #SBATCH --output=kilosort-%N.%x.%j.out
@@ -9,25 +9,25 @@
 
 
 if [[ -z $EPHYS_VERSION ]]; then
-   EPHYS_VERSION = "latest"
+   EPHYS_VERSION="latest"
 fi
 
 module load Mambaforge/23.11.0-fasrc01
-module load matlab/matlab/R2022b-fasrc01
 mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/versions/$EPHYS_VERSION/software/nextflow_conda
 
 if [[ -z $EPHYS_CONTAINER_DIR ]]; then
-   CONTAINER_DIR = "/n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/containers"
+   CONTAINER_DIR="/n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/containers"
 else 
-   CONTAINER_DIR = $EPHYS_CONTAINER_DIR
+   CONTAINER_DIR=$EPHYS_CONTAINER_DIR
 fi
 
 
 PIPELINE_PATH="./"
+#DATA_PATH="data_dir"
 DATA_PATH="data_dir"
 RESULTS_PATH="output"
 PIPELINE_PATH="./"
-WORK_DIR="scratch_location"
+WORK_DIR="scratch_location""
 
 INPUT_DATA_TYPE="spikeglx"
 
