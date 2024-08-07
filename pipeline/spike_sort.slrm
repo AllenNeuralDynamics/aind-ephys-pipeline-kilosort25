@@ -21,6 +21,8 @@ else
    CONTAINER_DIR=$EPHYS_CONTAINER_DIR
 fi
 
+export KACHERY_CLOUD_DIR="/n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/cred"
+export KACHERY_ZONE="kempner"
 
 PIPELINE_PATH="./"
 #DATA_PATH="data_dir"
