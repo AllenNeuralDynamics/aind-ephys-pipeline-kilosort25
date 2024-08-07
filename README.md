@@ -142,12 +142,14 @@ job_dispatch_args:
  --input {aind,spikeglx,nwb}
 
 preprocessing_args: 
- --denoising {cmr,destripe} 
- --no-remove-out-channels 
- --no-remove-bad-channels 
- --max-bad-channel-fraction  
- --motion {skip,compute,apply} 
- --motion-preset
+ --denoising {cmr,destripe} (default: cmr)
+ --no-remove-out-channels (whether to remove out channels)
+ --no-remove-bad-channels (whether to remove bad channels)
+ --max-bad-channel-fraction MAX_BAD_CHANNEL_FRACTION (Processing for than this fraction will be skipped)
+ --motion {skip,compute,apply} (default: compute)
+ --motion-preset (default: nonrigid_fast_and_accurate)
+ --debug (whether to run debug mode)
+ --debug-duration DEBUG_DURATION (Default: 30 seconds)
 ```
 
 ### Further details on the pipeline and the links to repositories
