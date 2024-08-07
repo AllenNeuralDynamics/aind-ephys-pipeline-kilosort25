@@ -1,0 +1,4 @@
+ghcr.io/allenneuraldynamics/aind-ephys-pipeline-base:si-0.100.7
+ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.100.7
+ghcr.io/allenneuraldynamics/aind-ephys-spikesort-kilosort25:si-0.100.7
+ghcr.io/allenneuraldynamics/aind-ephys-unit-classifier:si-0.100.7
