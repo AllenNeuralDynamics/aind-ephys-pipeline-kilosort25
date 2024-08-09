@@ -72,12 +72,6 @@ cd kilosort25-spike-sorting/pipeline
 
 Before submitting the job, the Slurm job file `spike_sort_slurm.slrm` and the nextflow configuration file `nextflow_slurm.config` need to be edited to specify the relevant directory paths and cluster resources. 
 
-
-#### Environment Setup (optional)
-
-For users running on the cannon cluster, we have cached the containers required for the workflow in a shared directory. For external users, you can use the `environment/pull_singularity_containers.sh` script to pull local copies of 
-the required containers to a location of your choice. The alternative path can then be passed to the nextflow execution script through setting the environment variable `EPHYS_CONTAINER_DIR` to point to that directory.
-
 #### 4.a Setting Up Directory Paths
 
 The following environment variables need modification within the `spike_sort_slurm.slrm` script:
@@ -87,6 +81,8 @@ The following environment variables need modification within the `spike_sort_slu
 - **WORK_DIR**: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
 
 For testing, you can try the example data with `DATA_PATH=/n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/data/sample_data_1/dir1/20240108_M175_4W50_g0_imec0/`.
+
+
 #### 4.b Modifying Slurm Job Options
 
 Within the job script, ensure you provide the appropriate partition and account names for your allocation on the Kempner AI cluster. 
@@ -106,11 +102,14 @@ The nextflow will start all the processes (slurm jobs) in the above parition and
 The following lines in the Slurm script define the software environment required to run the job: 
 ```
 module load Mambaforge/23.11.0-fasrc01
-module load matlab/R2022b-fasrc01
 mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow_conda
 ```
 It is okay to use the nextflow package in the above path. Alternatively, the nextflow package can be installed in the local directory. 
 
+#### 4.c Environment Setup (optional)
+
+For users running on the cannon cluster, we have cached the containers required for the workflow in a shared directory. For external users, you can use the `environment/pull_singularity_containers.sh` script to pull local copies of 
+the required containers to a location of your choice. The alternative path can then be passed to the nextflow execution script through setting the environment variable `EPHYS_CONTAINER_DIR` to point to that directory.
 
 ### 5. Submitting the Job
 
@@ -169,6 +168,7 @@ preprocessing_args:
  --motion {skip,compute,apply} 
  --motion-preset
 ```
+
 
 ### Further details on the pipeline and the links to repositories
 
