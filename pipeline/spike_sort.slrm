@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --mem=128GB
+#SBATCH --mem=32GB
 #SBATCH --partition=<parition_name>
 #SBATCH --account=<account_name> 
 #SBATCH --time=8:00:00
