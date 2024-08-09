@@ -20,19 +20,28 @@ All these steps are executed through the Nextflow workflow tool. While the pipel
 These are are major steps to run the nextflow pipeline on the Kempner AI 
 Cluster.
 
-1. Prepare input data
-2. Obtain the pipeline and Slurm scripts
-3. Edit the scripts and config files
-4. Submit the Slurm job
-5. Results and visualization
-6. Further Analysis
+1. Log in to the AI cluster
+2. Prepare input data
+3. Obtain the pipeline and Slurm scripts
+4. Edit the scripts and config files
+5. Submit the Slurm job
+6. Results and visualization
+7. Further Analysis
+
+### 1. Connect to the AI Cluster
+
+Connect to the AI Cluster using the SSH
+```
+ssh <your username>@login.rc.fas.harvard.edu
+```
+Please find more information about ways to connect to the cluster in the [handbook](https://kempnerinstitute.github.io/kempner-hpc-handbook/intro.html). 
 
 ### 0. Environment Setup
 
 For users running on the cannon cluster, we have cached the containers required for the workflow in a shared directory. For external users, you can use the `environment/pull_singularity_containers.sh` script to pull local copies of 
 the required containers to a location of your choice. The alternative path can then be passed to the nextflow execution script through setting the environment variable `EPHYS_CONTAINER_DIR` to point to that directory.
 
-### 1. Preparing Input Data
+### 2. Preparing Input Data
 
 Begin by transferring your experimental data to the cluster. Ensure each experiment's data resides in its own dedicated directory. The expected data structure is:
 
@@ -44,7 +53,7 @@ data_dir
 
 ```
 
-###2. Copy the Workfow and Job Files
+### 3. Copy the Workfow and Job Files
 
 Clone the repository on the cluster. 
 
@@ -53,7 +62,7 @@ git clone https://github.com/KempnerInstitute/kilosort25-spike-sorting
 
 ```
 
-### 3. Edit the Job and Config Files
+### 4. Edit the Job and Config Files
 
 The relevant job and config files are located in the directory `pipeline`. 
 
@@ -63,7 +72,13 @@ cd kilosort25-spike-sorting/pipeline
 
 Before submitting the job, the Slurm job file `spike_sort_slurm.slrm` and the nextflow configuration file `nextflow_slurm.config` need to be edited to specify the relevant directory paths and cluster resources. 
 
-#### 3.a Setting Up Directory Paths
+
+#### Environment Setup (optional)
+
+For users running on the cannon cluster, we have cached the containers required for the workflow in a shared directory. For external users, you can use the `environment/pull_singularity_containers.sh` script to pull local copies of 
+the required containers to a location of your choice. The alternative path can then be passed to the nextflow execution script through setting the environment variable `EPHYS_CONTAINER_DIR` to point to that directory.
+
+#### 4.a Setting Up Directory Paths
 
 The following environment variables need modification within the `spike_sort_slurm.slrm` script:
 
@@ -72,7 +87,7 @@ The following environment variables need modification within the `spike_sort_slu
 - **WORK_DIR**: A temporary directory used by the pipeline during execution. It's recommended to utilize the scratch storage for this purpose.
 
 For testing, you can try the example data with `DATA_PATH=/n/holylfs06/LABS/kempner_shared/Everyone/workflow/kilosort25-spike-sorting/data/sample_data_1/dir1/20240108_M175_4W50_g0_imec0/`.
-#### 3.b Modifying Slurm Job Options
+#### 4.b Modifying Slurm Job Options
 
 Within the job script, ensure you provide the appropriate partition and account names for your allocation on the Kempner AI cluster. 
 
@@ -97,7 +112,7 @@ mamba activate /n/holylfs06/LABS/kempner_shared/Everyone/ephys/software/nextflow
 It is okay to use the nextflow package in the above path. Alternatively, the nextflow package can be installed in the local directory. 
 
 
-### 4. Submitting the Job
+### 5. Submitting the Job
 
 Once you've made the necessary adjustments, submit the job script using the sbatch command:
 
@@ -112,7 +127,7 @@ squeue -u <username>
 ```
 
 
-### 5. Results and Visualization
+### 6. Results and Visualization
 
 Upon successful job completion, the output directory will contain various files:
 
@@ -130,7 +145,7 @@ The visualization_output.json file provides visualizations of timeseries, drift 
 [timeseries](https://figurl.org/f?v=npm://@fi-sci/figurl-sortingview@12/dist&d=sha1://f038c09c3465a22bda53e6917e1cfa7ad0afd6f7&label=ecephys_session%20-%20block0_imec0.ap_recording1_group0): Time series results of sorted spikes. 
 
 
-### 6. Further Analysis and Manual Curation
+### 7. Further Analysis and Manual Curation
 
 For manual curation and annotation of your data, you can leverage the Jupyter notebook available as `spike_interface.ipynb` that is available inside the directory postprocess. 
 
