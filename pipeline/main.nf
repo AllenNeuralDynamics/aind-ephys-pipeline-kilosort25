@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:8ab2ad20e32fe431c1e41b04e39932071a77df8e4e129cc2621cf3f028df2947
+// hash:sha256:4519932e07d865c5734e0c692fe9d2e2a89afec9db3339cdfe6c17a1a3a16dcb
 
 nextflow.enable.dsl = 1
 
@@ -310,7 +310,7 @@ process capsule_aind_ephys_spikesort_kilosort_25_7 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-2633671.git" capsule-repo
-	git -C capsule-repo checkout 1c79356c17a54db6f8925610b82c02220c3a213f --quiet
+	git -C capsule-repo checkout ce5bd8c3e61f07701ade1b7234b6f74678714dcb --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -370,7 +370,7 @@ process capsule_aind_ephys_unit_classifier_8 {
 // capsule - Collect Results Ecephys
 process capsule_aind_ephys_results_collector_9 {
 	tag 'capsule-4820071'
-	container "$REGISTRY_HOST/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5:5022290d1f94aedf19da7b704ffddcc2"
+	container "$REGISTRY_HOST/capsule/2fcf1c0b-df5d-4822-b078-9e1024a092c5:2d8e73d7aaff165372bf7ac640c30ad7"
 
 	cpus 8
 	memory '64 GB'
@@ -407,7 +407,7 @@ process capsule_aind_ephys_results_collector_9 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-4820071.git" capsule-repo
-	git -C capsule-repo checkout 39482b6ef1c8e03a03983ad09e6fe6e2eb0c75ce --quiet
+	git -C capsule-repo checkout 6390a99f625dc2270a11f219c3abbf8408804d9d --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
