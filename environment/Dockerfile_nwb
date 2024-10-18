@@ -8,23 +8,16 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U --no-cache-dir \
-    hdmf-zarr==0.8.0 \
-    pynwb==2.8.0 \
-    neuroconv==0.4.10 \
+    hdmf-zarr==0.9.0 \
+    pynwb==2.8.2 \
+    neuroconv==0.6.4 \
     zarr==2.17.2 \
-    wavpack-numcodecs==0.1.5 \
-    spikeinterface[full]==0.100.7
-
-# NEO installation from source with a SpikeGLX fix
-RUN pip uninstall -y neo && \
-    git clone https://github.com/alejoe91/python-neo.git &&  \
-    cd python-neo && git checkout cf543aa7b85124193a8d1cf726a92de54b360026  && \
-    pip install --no-cache-dir . && \
-    cd ..
+    wavpack-numcodecs==0.2.1 \
+    spikeinterface[full]==0.101.2
 
 # SpikeInterface installation from source with an NWB fix (#3059)
-RUN pip uninstall -y spikeinterface && \
-git clone https://github.com/alejoe91/spikeinterface.git &&  \
-cd spikeinterface && git checkout bed769214302a6ea10c44164f79edb5eaaf55f33  && \
+RUN pip uninstall -y neuroconv && \
+git clone https://github.com/catalystneuro/neuroconv.git &&  \
+cd neuroconv && git checkout bfbbe4bff8245760622e5b873cd846d346c6ae06  && \
 pip install --no-cache-dir . && \
 cd ..
