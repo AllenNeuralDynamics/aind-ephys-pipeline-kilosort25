@@ -122,6 +122,7 @@ process job_dispatch {
 	path 'capsule/results/*' into job_dispatch_to_results_collector
 	path 'capsule/results/*' into job_dispatch_to_nwb_ecephys
 	path 'capsule/results/*' into job_dispatch_to_nwb_units
+	env max_duration_min
 	
 	script:
 	"""
@@ -133,6 +134,8 @@ process job_dispatch {
 	mkdir -p capsule/results
 	mkdir -p capsule/scratch
 
+	TASK_DIR=\$(pwd)
+
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
 	git -C capsule-repo checkout a88df8eeb66166faff989475e8a0c25661cbe83a --quiet
@@ -143,6 +146,11 @@ process job_dispatch {
 	cd capsule/code
 	chmod +x run
 	./run ${params.job_dispatch_args}
+
+	max_duration_min=\$(python get_max_recording_duration_min.py)
+	echo "MAX DURATION: \$max_duration_min"
+
+	cd \$TASK_DIR
 
 	echo "[${task.tag}] completed!"
 	"""

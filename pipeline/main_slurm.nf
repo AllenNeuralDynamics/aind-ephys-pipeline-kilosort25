@@ -20,18 +20,6 @@ else
 }
 println "Using SORTER: ${sorter}"
 
-// set recording duration
-if ("duration" in params_keys) {
-	duration = params.duration
-	print "Recording duration: ${duration}h. "
-}
-else
-{
-	duration = 2
-	print "Assuming recording duration of: ${duration}h To change, set '--duration' in params. "
-}
-println "The requested time for each process will be set based on the recording duration (assuming a Neuropixels-sized probe)."
-
 if (!params_keys.contains('job_dispatch_args')) {
 	params.job_dispatch_args = ""
 }
@@ -110,7 +98,6 @@ else if (sorter == 'spykingcircus2') {
 	spikesort_to_results_collector = spikesort_spykingcircus2_to_results_collector
 }
 
-// TODO: Allocate time based on recording duration
 
 // capsule - Job Dispatch Ecephys
 process job_dispatch {
@@ -119,7 +106,7 @@ process job_dispatch {
 
 	cpus 4
 	memory '32 GB'
-	time { duration + 'h' }
+	time '1h'
 
 	input:
 	path 'capsule/data/ecephys_session' from ecephys_to_job_dispatch.collect()
@@ -131,11 +118,14 @@ process job_dispatch {
 	path 'capsule/results/*' into job_dispatch_to_results_collector
 	path 'capsule/results/*' into job_dispatch_to_nwb_ecephys
 	path 'capsule/results/*' into job_dispatch_to_nwb_units
+	env max_duration_min
 
 	script:
 	"""
 	#!/usr/bin/env bash
 	set -e
+
+	TASK_DIR=\$(pwd)
 
 	mkdir -p capsule
 	mkdir -p capsule/data
@@ -153,6 +143,11 @@ process job_dispatch {
 	chmod +x run
 	./run ${params.job_dispatch_args}
 
+	max_duration_min=\$(python get_max_recording_duration_min.py)
+	echo "Max recording duration in minutes: \$max_duration_min"
+
+	cd \$TASK_DIR
+
 	echo "[${task.tag}] completed!"
 	"""
 }
@@ -164,9 +159,11 @@ process preprocessing {
 
 	cpus 16
 	memory '64 GB'
-	time { duration*4 + 'h' }
+	// Allocate 4h per recording hour
+	time { max_duration_min.value.toFloat()/60*4 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from job_dispatch_to_preprocessing.flatten()
 	path 'capsule/data/ecephys_session' from ecephys_to_preprocessing.collect()
 
@@ -189,10 +186,13 @@ process preprocessing {
 	mkdir -p capsule/scratch
 
 	echo "[${task.tag}] cloning git repo..."
+	echo "Allocated time: ${task.time}"
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing.git" capsule-repo
 	git -C capsule-repo checkout 2d900939aeba087a5be9f0171b5dd61e28505568 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
+
+	echo "[${task.tag}] allocated time: ${task.time}"
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
@@ -213,9 +213,11 @@ process spikesort_kilosort25 {
 
 	cpus 16
 	memory '64 GB'
-	time { duration*4 + 'h' }
+	// Allocate 4h per recording hour
+	time { max_duration_min.value.toFloat()/60*4 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from preprocessing_to_spikesort_kilosort25
 
 	output:
@@ -242,6 +244,8 @@ process spikesort_kilosort25 {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -261,9 +265,11 @@ process spikesort_kilosort4 {
 
 	cpus 16
 	memory '64 GB'
-	time { duration*4 + 'h' }
+	// Allocate 4h per recording hour
+	time { max_duration_min.value.toFloat()/60*4 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from preprocessing_to_spikesort_kilosort4
 
 	output:
@@ -290,6 +296,8 @@ process spikesort_kilosort4 {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -307,9 +315,11 @@ process spikesort_spykingcircus2 {
 
 	cpus 16
 	memory '64 GB'
-	time { duration*8 + 'h' }
+	// Allocate 4h per recording hour
+	time { max_duration_min.value.toFloat()/60*4 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from preprocessing_to_spikesort_spykingcircus2
 
 	output:
@@ -336,6 +346,8 @@ process spikesort_spykingcircus2 {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -354,9 +366,11 @@ process postprocessing {
 
 	cpus 16
 	memory '64 GB'
-	time { duration*4 + 'h' }
+	// Allocate 4h per recording hour
+	time { max_duration_min.value.toFloat()/60*4 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/ecephys_session' from ecephys_to_postprocessing.collect()
 	path 'capsule/data/' from spikesort_to_postprocessing.collect()
 	path 'capsule/data/' from preprocessing_to_postprocessing.collect()
@@ -384,6 +398,8 @@ process postprocessing {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -400,9 +416,11 @@ process curation {
 
 	cpus 4
 	memory '32 GB'
-	time { duration/6 + 'h' }
+	// Allocate 10min per recording hour
+	time { max_duration_min.value.toFloat()\60*10 + 'm' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from postprocessing_to_curation
 
 	output:
@@ -425,6 +443,9 @@ process curation {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -441,9 +462,11 @@ process unit_classifier {
 
 	cpus 4
 	memory '32 GB'
-	time { duration/2 + 'h' }
+	// Allocate 30min per recording hour
+	time { max_duration_min.value.toFloat()/60*30 + 'm' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from postprocessing_to_unit_classifier
 
 	output:
@@ -466,6 +489,9 @@ process unit_classifier {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -482,9 +508,11 @@ process visualization {
 
 	cpus 4
 	memory '32 GB'
-	time { duration*2 + 'h' }
+	// Allocate 2h per recording hour
+	time { max_duration_min.value.toFloat()\60*2 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from job_dispatch_to_visualization.collect()
 	path 'capsule/data/' from unit_classifier_to_visualization.collect()
 	path 'capsule/data/' from preprocessing_to_visualization
@@ -513,6 +541,9 @@ process visualization {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -529,11 +560,13 @@ process results_collector {
 
 	cpus 4
 	memory '32 GB'
-	time { duration*1 + 'h' }
+	// Allocate 1h per recording hour
+	time { max_duration_min.value.toFloat()/60 + 'h' }
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from job_dispatch_to_results_collector.collect()
 	path 'capsule/data/' from preprocessing_to_results_collector.collect()
 	path 'capsule/data/' from spikesort_to_results_collector.collect()
@@ -565,6 +598,8 @@ process results_collector {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -581,9 +616,11 @@ process nwb_subject {
 
 	cpus 4
 	memory '32 GB'
-	time { duration/6 + 'h' }
+	// Allocate 10min per recording hour
+	time { max_duration_min.value.toFloat()/60*10 + 'm' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/ecephys_session' from ecephys_to_nwb_subject.collect()
 
 	output:
@@ -605,6 +642,8 @@ process nwb_subject {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -621,9 +660,11 @@ process nwb_ecephys {
 
 	cpus 16
 	memory '64 GB'
-	time { duration*2 + 'h' }
+	// Allocate 2h per recording hour
+	time { max_duration_min.value.toFloat()/60*2 + 'h' }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from job_dispatch_to_nwb_ecephys.collect()
 	path 'capsule/data/ecephys_session' from ecephys_to_nwb_ecephys.collect()
 	path 'capsule/data/' from nwb_subject_to_nwb_ecephys.collect()
@@ -647,6 +688,8 @@ process nwb_ecephys {
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
+	echo "[${task.tag}] allocated time: ${task.time}"
+
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
@@ -664,11 +707,13 @@ process nwb_units {
 
 	cpus 4
 	memory '32 GB'
-	time { duration*2 + 'h' }
+	// Allocate 2h per recording hour
+	time { max_duration_min.value.toFloat()/60*2 + 'h' }
 
 	publishDir "$RESULTS_PATH/nwb", saveAs: { filename -> new File(filename).getName() }
 
 	input:
+	env max_duration_min
 	path 'capsule/data/' from job_dispatch_to_nwb_units.collect()
 	path 'capsule/data/' from results_collector_to_nwb_units.collect()
 	path 'capsule/data/ecephys_session' from ecephys_to_nwb_units.collect()
@@ -692,6 +737,8 @@ process nwb_units {
 	git -C capsule-repo checkout 0dda57ba0d413be246c7966f7e249e2d0dc93ff2 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
+
+	echo "[${task.tag}] allocated time: ${task.time}"
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
