@@ -417,7 +417,7 @@ process curation {
 	cpus 4
 	memory '32 GB'
 	// Allocate 10min per recording hour
-	time { max_duration_min.value.toFloat()\60*10 + 'm' }
+	time { max_duration_min.value.toFloat()/60*10 + 'm' }
 
 	input:
 	env max_duration_min
@@ -509,7 +509,7 @@ process visualization {
 	cpus 4
 	memory '32 GB'
 	// Allocate 2h per recording hour
-	time { max_duration_min.value.toFloat()\60*2 + 'h' }
+	time { max_duration_min.value.toFloat()/60*2 + 'h' }
 
 	input:
 	env max_duration_min
