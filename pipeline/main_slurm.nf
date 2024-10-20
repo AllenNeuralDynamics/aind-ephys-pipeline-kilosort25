@@ -197,7 +197,7 @@ process preprocessing {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.preprocessing_args} --n-jobs ${n_jobs}
+	./run ${params.preprocessing_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -249,7 +249,7 @@ process spikesort_kilosort25 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.spikesorting_args} --n-jobs ${n_jobs}
+	./run ${params.spikesorting_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -301,7 +301,7 @@ process spikesort_kilosort4 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.spikesorting_args} --n-jobs ${n_jobs}
+	./run ${params.spikesorting_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -351,7 +351,7 @@ process spikesort_spykingcircus2 {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.spikesorting_args} --n-jobs ${n_jobs}
+	./run ${params.spikesorting_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -403,7 +403,7 @@ process postprocessing {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.postprocessing_args} --n-jobs ${n_jobs}
+	./run ${params.postprocessing_args}
 
 	echo "[${task.tag}] completed!"
 	"""
