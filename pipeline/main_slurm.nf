@@ -684,7 +684,7 @@ process nwb_ecephys {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ecephys-nwb.git" capsule-repo
-	git -C capsule-repo checkout c921c49a0806ccd437a726862d3318a2ef4b9370 --quiet
+	git -C capsule-repo -c core.fileMode=false checkout c921c49a0806ccd437a726862d3318a2ef4b9370 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -734,7 +734,7 @@ process nwb_units {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-units-nwb.git" capsule-repo
-	git -C capsule-repo checkout b532ec8dc7d1dc8751bb4de80941772465aaecd9 --quiet
+	git -C capsule-repo -c core.fileMode=false checkout b532ec8dc7d1dc8751bb4de80941772465aaecd9 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
