@@ -1,0 +1,7 @@
+FROM spikeinterface/kilosort2_5-compiled-base:latest
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN pip install -U --no-cache-dir \
+    aind-data-schema==1.1.0 \
+    spikeinterface[full]==0.101.2
