@@ -7,7 +7,6 @@ println "DATA_PATH: ${DATA_PATH}"
 println "RESULTS_PATH: ${RESULTS_PATH}"
 println "PARAMS: ${params}"
 
-// TODO: Allocate time based on recording duration
 
 params_keys = params.keySet()
 // set sorter
@@ -159,8 +158,8 @@ process preprocessing {
 
 	cpus 16
 	memory '64 GB'
-	// Allocate 4h per recording hour
-	time { max_duration_min.value.toFloat()/60*4 + 'h' }
+	// Allocate 4x recording duration
+	time { max_duration_min.value.toFloat()*4 + 'm' }
 
 	input:
 	env max_duration_min
@@ -212,8 +211,8 @@ process spikesort_kilosort25 {
 
 	cpus 16
 	memory '64 GB'
-	// Allocate 4h per recording hour
-	time { max_duration_min.value.toFloat()/60*4 + 'h' }
+	// Allocate 4x recording duration
+	time { max_duration_min.value.toFloat()*4 + 'm' }
 
 	input:
 	env max_duration_min
@@ -264,8 +263,8 @@ process spikesort_kilosort4 {
 
 	cpus 16
 	memory '64 GB'
-	// Allocate 4h per recording hour
-	time { max_duration_min.value.toFloat()/60*4 + 'h' }
+	// Allocate 4x recording duration
+	time { max_duration_min.value.toFloat()*4 + 'm' }
 
 	input:
 	env max_duration_min
@@ -313,8 +312,8 @@ process spikesort_spykingcircus2 {
 
 	cpus 16
 	memory '64 GB'
-	// Allocate 4h per recording hour
-	time { max_duration_min.value.toFloat()/60*4 + 'h' }
+	// Allocate 4x recording duration
+	time { max_duration_min.value.toFloat()*4 + 'm' }
 
 	input:
 	env max_duration_min
@@ -363,8 +362,8 @@ process postprocessing {
 
 	cpus 16
 	memory '64 GB'
-	// Allocate 4h per recording hour
-	time { max_duration_min.value.toFloat()/60*4 + 'h' }
+	// Allocate 4x recording duration
+	time { max_duration_min.value.toFloat()*4 + 'm' }
 
 	input:
 	env max_duration_min
@@ -413,8 +412,8 @@ process curation {
 
 	cpus 4
 	memory '32 GB'
-	// Allocate 10min per recording hour
-	time { max_duration_min.value.toFloat()/60*10 + 'm' }
+	// Allocate 10min per recording hour. Minimum 10m
+	time { max(max_duration_min.value.toFloat()/6, 10) + 'm' }
 
 	input:
 	env max_duration_min
@@ -459,8 +458,8 @@ process unit_classifier {
 
 	cpus 4
 	memory '32 GB'
-	// Allocate 30min per recording hour
-	time { max_duration_min.value.toFloat()/60*30 + 'm' }
+	// Allocate 30min per recording hour. Minimum 10m
+	time { max(max_duration_min.value.toFloat()*0.5, 10) + 'm' }
 
 	input:
 	env max_duration_min
@@ -506,7 +505,7 @@ process visualization {
 	cpus 4
 	memory '32 GB'
 	// Allocate 2h per recording hour
-	time { max_duration_min.value.toFloat()/60*2 + 'h' }
+	time { max_duration_min.value.toFloat()*2 + 'm' }
 
 	input:
 	env max_duration_min
@@ -557,8 +556,8 @@ process results_collector {
 
 	cpus 4
 	memory '32 GB'
-	// Allocate 1h per recording hour
-	time { max_duration_min.value.toFloat()/60 + 'h' }
+	// Allocate 1x recording duration
+	time { max(max_duration_min.value.toFloat(), 10) + 'm' }
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -613,8 +612,8 @@ process nwb_subject {
 
 	cpus 4
 	memory '32 GB'
-	// Allocate 10min per recording hour
-	time { max_duration_min.value.toFloat()/60*10 + 'm' }
+	// Allocate 10min per recording hour. Minimum 10m
+	time { max(max_duration_min.value.toFloat()/6, 10) + 'm' }
 
 	input:
 	env max_duration_min
@@ -657,8 +656,8 @@ process nwb_ecephys {
 
 	cpus 16
 	memory '64 GB'
-	// Allocate 2h per recording hour
-	time { max_duration_min.value.toFloat()/60*2 + 'h' }
+	// Allocate 2x recording duration
+	time { max_duration_min.value.toFloat()*2 + 'm' }
 
 	input:
 	env max_duration_min
@@ -704,8 +703,8 @@ process nwb_units {
 
 	cpus 4
 	memory '32 GB'
-	// Allocate 2h per recording hour
-	time { max_duration_min.value.toFloat()/60*2 + 'h' }
+	// Allocate 2x recording duration
+	time { max_duration_min.value.toFloat()*2 + 'm' }
 
 	publishDir "$RESULTS_PATH/nwb", saveAs: { filename -> new File(filename).getName() }
 
