@@ -134,7 +134,7 @@ process job_dispatch {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
-	git -C capsule-repo -c core.fileMode=false checkout 123d39abd367073dadafbba1c314265b874d3d31 --quiet
+	git -C capsule-repo -c core.fileMode=false checkout c1e1bff0feb974b56fad516f5c36449e10f39dae --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
