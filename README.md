@@ -1,7 +1,7 @@
 # AIND Ephys Pipeline
 ## aind-ephys-pipeline
 
-Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/MouseLand/Kilosort/tree/v2.5) via [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
+Electrophysiology analysis pipeline with [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
 
 The pipeline is based on [Nextflow](https://www.nextflow.io/) and it includes the following steps:
 
@@ -21,16 +21,16 @@ The pipeline is based on [Nextflow](https://www.nextflow.io/) and it includes th
   - [ecephys](https://github.com/AllenNeuralDynamics/aind-ecephys-nwb)
   - [units](https://github.com/AllenNeuralDynamics/aind-units-nwb)
 
-Each step is run in a container and can be deployed on several platforms. 
-See the [Local deplyment](#local-deployment) and [SLURM deployment](#slurm-deployment) sections for more details.
+Each step is run in a container and can be deployed on several platforms. See [Deployments](#deployments) for more details.
 
 # Input
 
 Currently, the pipeline supports the following input data types:
 
-- `aind`: data ingestion used at AIND. The input folder must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
 - `spikeglx`: the input folder should be a SpikeGLX folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
-- (WIP) `nwb`: the input folder should contain a single NWB file (both HDF5 and Zarr backend are supported).
+- `openephys`: the input folder should be an Open Ephys folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
+- `nwb`: the input folder should contain a single NWB file (both HDF5 and Zarr backend are supported).
+- `aind`: data ingestion used at AIND. The input folder must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
 
 For more information on how to select the input mode and set additional parameters,
 see the [Local deployment - Additional parameters](#additional-parameters) section.
@@ -46,8 +46,7 @@ The output includes the following files and folders:
 
 **`preprocessed`**
 
-This folder contains the output of preprocessing, including preprocessed JSON files associated to each stream and 
-motion folders containing the estimated motion.
+This folder contains the output of preprocessing, including preprocessed JSON files associated to each stream and motion folders containing the estimated motion.
 The preprocessed JSON files can be used to re-instantiate the recordings, provided that the raw data folder is 
 mapped to the same location as the input of the pipeline.
 
@@ -80,20 +79,20 @@ sorting_raw = si.load_extractor("path-to-spikesorted-folder")
 
 **`postprocessed`**
 
-This folder contains the output of the post-processing for each stream. It can be loaded as a 
-`spikeinterface.WaveformExtractor` with:
+This folder contains the output of the post-processing in zarr format for each stream. It can be loaded as a 
+`spikeinterface.SortingAnalyzer` with:
 ```python
 import spikeinterface as si
 
-waveform_extractor = si.load_waveforms("path-to-postprocessed-folder", with_recording=False)
+sorting_analyzer = si.load_sorting_analyzer("path-to-postprocessed-folder.zarr", with_recording=False)
 ```
 
-The `waveform_extractor` includes many computed extensions. This example shows how to load some of them:
+The `sorting_analyzer` includes many computed extensions. This example shows how to load some of them:
 ```python
-unit_locations = we.load_extension("unit_locations").get_data()
+unit_locations = sorting_analyzer.get_extension("unit_locations").get_data()
 # unit_locations is a np.array with the estimated locations
 
-qm = we.load_extension("quality_metrics").get_data()
+qm = sorting_analyzer.get_extension("quality_metrics").get_data()
 # qm is a pandas.DataFrame with the computed quality metrics
 ```
 
@@ -117,7 +116,7 @@ The `sorting_curated` object contains the following curation properties (which c
 
 **`nwb`**
 
-This folder contains the generated NWB files.
+This folder contains the generated NWB files. One NWB file is generated for each block (i.e, Open Ephys experiment) and segment (i.e, Open Ephys recording). The NWB file includes all streams (probes) that are part of the block/segment, with session/subject information, ecephys metadata (electrodes, electrode groups), LFP signals, and Units.
 
 **`visualization_output.json`**
 
@@ -142,11 +141,9 @@ In Nextflow, the The `-resume` argument enables the caching mechanism.
 The following global parameters can be passed to the pipeline:
 
 ```bash
---n_jobs N_JOBS
+--n_jobs N_JOBS (for local deployment, how many jobs to run in parallel)
 --sorter {kilosort25,kilosort4,spykingcircus2}
---duration DURATION
 ```
-
 
 Some steps of the pipeline accept additional parameters, that can be passed as follows:
 
@@ -159,7 +156,7 @@ The steps that accept additional arguments are:
 ### `job_dispatch_args`:
 
 ```bash
-  ---concatenate         Whether to concatenate recordings (segments) or not. Default: False
+  ---concatenate        Whether to concatenate recordings (segments) or not. Default: False
   --split-groups        Whether to process different groups separately
   --debug               Whether to run in DEBUG mode
   --debug-duration DEBUG_DURATION
@@ -237,10 +234,11 @@ The steps that accept additional arguments are:
 ```
 
 
-# Local deployment
+# Deployments
 
+## Local
 
-## Requirements
+### Requirements
 
 To deploy locally, you need to install:
 
@@ -268,7 +266,7 @@ If you plan to use this service extensively, it is recommended to
 [create your own kachery zone](https://github.com/flatironinstitute/kachery-cloud/blob/main/doc/create_kachery_zone.md).
 
 
-## Run
+### Run
 
 Clone this repo (`git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.git`) and go to the 
 `pipeline` folder. You will find a `main_local.nf`. This nextflow script is accompanied by the 
@@ -290,7 +288,7 @@ The `--n_jobs` argument specifies the number of parallel jobs to run.
 Additional parameters can be passed as described in the [Parameters](#parameters) section.
 
 
-## Example run command
+### Example run command
 
 As an example, here is how to run the pipeline on a SpikeGLX dataset in debug mode 
 on a 120-second snippet of the recording with 16 jobs:
@@ -308,7 +306,7 @@ When deploying locally, the most recource-intensive processes (preprocessing, sp
 This is achieved by setting the `maxForks 1` directive in such processes.
 
 
-# SLURM deployment
+## SLURM
 
 To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the 
 [Nextflow](https://www.nextflow.io/docs/latest/install.html) and Singularity/Apptainer installed. 
@@ -359,8 +357,7 @@ Then, you can submit the script to the cluster with:
 sbatch slurm_submit.sh
 ```
 
-
-# Create a custom layer for data ingestion
+## Creating a custom layer for data ingestion
 
 The default job-dispatch step only supports loading data 
 from AIND folders, SpikeGLX folders, and NWB files.
@@ -369,3 +366,7 @@ To ingest other types of data, you can create a similar repo and modify the way 
 (see the [job dispatch README](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/blob/main/README.md) for more details).
 
 Then you can create a modified `main_local-slurm.nf` `job_dispatch` process to point to your custom job dispatch repo.
+
+## Code Ocean
+
+Talk about branches/options...
