@@ -138,7 +138,7 @@ process job_dispatch {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
-	git -C capsule-repo checkout f13f3baaec0cabfada060d8860a4056dbcd656b8 --quiet
+	git -C capsule-repo checkout e6aa9a0628f1b4a4841d114e32835668b0bddc04 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -538,7 +538,7 @@ process results_collector {
 	"""
 }
 
-// capsule - NWB-Packaging-Subject-Capsule (to rename)
+// capsule - aind-subject-nwb
 process nwb_subject {
 	tag 'nwb-subject'
 	container 'ghcr.io/allenneuraldynamics/aind-ephys-pipeline-nwb:si-0.101.2'
@@ -560,7 +560,7 @@ process nwb_subject {
 	mkdir -p capsule/scratch
 
 	echo "[${task.tag}] cloning git repo..."
-	git clone "https://github.com/AllenNeuralDynamics/NWB_Packaging_Subject_Capsule.git" capsule-repo
+	git clone "https://github.com/AllenNeuralDynamics/aind-subject-nwb" capsule-repo
     git -C capsule-repo checkout 0817b7aa432c788d00c49aab0fa5da19a5199d07 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo

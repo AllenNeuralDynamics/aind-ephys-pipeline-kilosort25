@@ -238,6 +238,12 @@ The steps that accept additional arguments are:
 
 ## Local
 
+> :warning: While the pipeline can be deployed locally on a workstation or a server, it is recommended to 
+> deploy it on a SLURM cluster or on a batch processing system (e.g., AWS batch).
+> When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) 
+> are not parallelized to avoid overloading the system.
+> This is achieved by setting the `maxForks 1` directive in such processes.
+
 ### Requirements
 
 To deploy locally, you need to install:
@@ -299,12 +305,6 @@ NXF_VER=22.10.8 DATA_PATH=path/to/data_spikeglx RESULTS_PATH=path/to/results_spi
     --job_dispatch_args "--input spikeglx" --preprocessing_args "--debug --debug-duration 120"
 ```
 
-## Caveats of local deployment
-
-While the pipeline can be deployed locally on a workstation or a server, it is recommended to to deploy it on a cluster or on a batch processing system (e.g., AWS batch).
-When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) are not parallelized to avoid overloading the system.
-This is achieved by setting the `maxForks 1` directive in such processes.
-
 
 ## SLURM
 
@@ -360,13 +360,22 @@ sbatch slurm_submit.sh
 ## Creating a custom layer for data ingestion
 
 The default job-dispatch step only supports loading data 
-from AIND folders, SpikeGLX folders, and NWB files.
+from SpikeGLX, Open Ephys, NWB, and AIND formats.
 
 To ingest other types of data, you can create a similar repo and modify the way that the job list is created 
 (see the [job dispatch README](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/blob/main/README.md) for more details).
 
-Then you can create a modified `main_local-slurm.nf` `job_dispatch` process to point to your custom job dispatch repo.
+Then you can create a modified `main_local-slurm.nf`, where the `job_dispatch` process points to your custom job dispatch repo.
 
-## Code Ocean
+## Code Ocean (AIND)
 
-Talk about branches/options...
+At AIND, the pipeline is deployed on the Code Ocean platform. Since currently Code Ocean does not support 
+conditional processes, pipelines running different sorters and AIND-specific options are implemented in separate
+branches. This is a list of the available pipeline branches that are deployed in Code Ocean:
+
+- `co_kilosort25`: pipeline with Kilosort2.5 sorter
+- `co_kilosort4`: pipeline with Kilosort4 sorter
+- `co_spykingcircus2`: pipeline with Spyking Circus 2 sorter
+- `co_kilosort25_opto`: pipeline with Kilosort2.5 sorter and optogenetics artifact removal
+- `co_kilosort4_opto`: pipeline with Kilosort4 sorter and optogenetics artifact removal
+- `co_spykingcircus2_opto`: pipeline with Spyking Circus 2 sorter and optogenetics artifact removal
