@@ -413,7 +413,7 @@ process curation {
 	cpus 4
 	memory '32 GB'
 	// Allocate 10min per recording hour. Minimum 10m
-	time { max(max_duration_min.value.toFloat()/6, 10) + 'm' }
+	time { max_duration_min.value.toFloat()/6 > 10 ? max_duration_min.value.toFloat()/6 + 'm' : '10m' }
 
 	input:
 	env max_duration_min
@@ -459,7 +459,7 @@ process unit_classifier {
 	cpus 4
 	memory '32 GB'
 	// Allocate 30min per recording hour. Minimum 10m
-	time { max(max_duration_min.value.toFloat()*0.5, 10) + 'm' }
+	time { max_duration_min.value.toFloat()*0.5 > 10 ? max_duration_min.value.toFloat()*0.5 + 'm' : '10m' }
 
 	input:
 	env max_duration_min
@@ -557,7 +557,7 @@ process results_collector {
 	cpus 4
 	memory '32 GB'
 	// Allocate 1x recording duration
-	time { max(max_duration_min.value.toFloat(), 10) + 'm' }
+	time { max_duration_min.value.toFloat() > 10 ? max_duration_min.value.toFloat() + 'm' : '10m' }
 
 	publishDir "$RESULTS_PATH", saveAs: { filename -> new File(filename).getName() }
 
@@ -613,7 +613,7 @@ process nwb_subject {
 	cpus 4
 	memory '32 GB'
 	// Allocate 10min per recording hour. Minimum 10m
-	time { max(max_duration_min.value.toFloat()/6, 10) + 'm' }
+	time { max_duration_min.value.toFloat()/6 > 10 ? max_duration_min.value.toFloat()/6 + 'm' : '10m' }
 
 	input:
 	env max_duration_min

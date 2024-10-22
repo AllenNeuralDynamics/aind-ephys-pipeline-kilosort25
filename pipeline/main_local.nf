@@ -606,7 +606,7 @@ process nwb_ecephys {
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.nwb_ecphys_args}
+	./run ${params.nwb_ecephys_args}
 
 	echo "[${task.tag}] completed!"
 	"""
