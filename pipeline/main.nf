@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-// hash:sha256:ee238a2e6bda43aaa966305b789cc227184d10b60b7ff1a044182d98c6b8a0f6
+// hash:sha256:84f10e9f2348f5b7fb0bb928ce820fe0cc54b22a3196206eb6ec67d78a45afa8
 
 nextflow.enable.dsl = 1
 
@@ -10,21 +10,21 @@ ecephys_to_preprocess_ecephys_2 = channel.fromPath(params.ecephys_url + "/", typ
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_curation_2_3 = channel.create()
 ecephys_to_job_dispatch_ecephys_4 = channel.fromPath(params.ecephys_url + "/", type: 'any')
 ecephys_to_postprocess_ecephys_5 = channel.fromPath(params.ecephys_url + "/", type: 'any')
-capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_postprocessing_5_6 = channel.create()
+capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_postprocessing_5_6 = channel.create()
 capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_postprocessing_5_7 = channel.create()
 capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_postprocessing_5_8 = channel.create()
 capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_visualization_6_9 = channel.create()
 capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_visualization_6_10 = channel.create()
 capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_visualization_6_11 = channel.create()
 capsule_aind_ephys_curation_2_to_capsule_aind_ephys_visualization_6_12 = channel.create()
-capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_visualization_6_13 = channel.create()
+capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_visualization_6_13 = channel.create()
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_visualization_6_14 = channel.create()
 ecephys_to_visualize_ecephys_15 = channel.fromPath(params.ecephys_url + "/", type: 'any')
-capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_16 = channel.create()
+capsule_aind_ephys_preprocessing_1_to_capsule_spikesort_spyking_circus_2_ecephys_7_16 = channel.create()
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_unit_classifier_8_17 = channel.create()
 capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_results_collector_9_18 = channel.create()
 capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_results_collector_9_19 = channel.create()
-capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_results_collector_9_20 = channel.create()
+capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_results_collector_9_20 = channel.create()
 capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_results_collector_9_21 = channel.create()
 capsule_aind_ephys_curation_2_to_capsule_aind_ephys_results_collector_9_22 = channel.create()
 capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_results_collector_9_23 = channel.create()
@@ -54,7 +54,7 @@ process capsule_aind_ephys_preprocessing_1 {
 	output:
 	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_postprocessing_5_7
 	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_visualization_6_11
-	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_16
+	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_spikesort_spyking_circus_2_ecephys_7_16
 	path 'capsule/results/*' into capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_results_collector_9_19
 
 	script:
@@ -73,7 +73,7 @@ process capsule_aind_ephys_preprocessing_1 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-0874799.git" capsule-repo
-	git -C capsule-repo checkout bb516eafb1c2a73901ac5cba781a5bc316679058 --quiet
+	git -C capsule-repo checkout 8b993d495e6230b6b2aabfd4acff364679e864b8 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -165,7 +165,7 @@ process capsule_aind_ephys_job_dispatch_4 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-5089190.git" capsule-repo
-	git -C capsule-repo checkout c12f45e41d8c9961657a011b50d6a0b376808421 --quiet
+	git -C capsule-repo checkout f13f3baaec0cabfada060d8860a4056dbcd656b8 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -188,7 +188,7 @@ process capsule_aind_ephys_postprocessing_5 {
 
 	input:
 	path 'capsule/data/ecephys_session' from ecephys_to_postprocess_ecephys_5.collect()
-	path 'capsule/data/' from capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_postprocessing_5_6.collect()
+	path 'capsule/data/' from capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_postprocessing_5_6.collect()
 	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_postprocessing_5_7.collect()
 	path 'capsule/data/' from capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_postprocessing_5_8.flatten()
 
@@ -240,7 +240,7 @@ process capsule_aind_ephys_visualization_6 {
 	path 'capsule/data/' from capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_visualization_6_10.collect()
 	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_visualization_6_11
 	path 'capsule/data/' from capsule_aind_ephys_curation_2_to_capsule_aind_ephys_visualization_6_12.collect()
-	path 'capsule/data/' from capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_visualization_6_13.collect()
+	path 'capsule/data/' from capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_visualization_6_13.collect()
 	path 'capsule/data/' from capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_visualization_6_14.collect()
 	path 'capsule/data/ecephys_session' from ecephys_to_visualize_ecephys_15.collect()
 
@@ -276,30 +276,28 @@ process capsule_aind_ephys_visualization_6 {
 	"""
 }
 
-// capsule - Spikesort Kilosort2.5 Ecephys
-process capsule_aind_ephys_spikesort_kilosort_25_7 {
-	tag 'capsule-2633671'
-	container "$REGISTRY_HOST/capsule/9c169ec3-5933-4b10-808b-6fa4620e37b7:00a3548a3adaea831d1ec593d056d4a0"
+// capsule - Spikesort SpykingCircus2 Ecephys
+process capsule_spikesort_spyking_circus_2_ecephys_7 {
+	tag 'capsule-1515622'
+	container "$REGISTRY_HOST/capsule/b68f9aec-7e8d-4862-865a-38081f5a6aeb:3f7426e812cba128e506a51a09632985"
 
 	cpus 16
 	memory '61 GB'
-	accelerator 1
-	label 'gpu'
 
 	input:
-	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_spikesort_kilosort_25_7_16
+	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_spikesort_spyking_circus_2_ecephys_7_16
 
 	output:
-	path 'capsule/results/*' into capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_postprocessing_5_6
-	path 'capsule/results/*' into capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_visualization_6_13
-	path 'capsule/results/*' into capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_results_collector_9_20
+	path 'capsule/results/*' into capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_postprocessing_5_6
+	path 'capsule/results/*' into capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_visualization_6_13
+	path 'capsule/results/*' into capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_results_collector_9_20
 
 	script:
 	"""
 	#!/usr/bin/env bash
 	set -e
 
-	export CO_CAPSULE_ID=9c169ec3-5933-4b10-808b-6fa4620e37b7
+	export CO_CAPSULE_ID=b68f9aec-7e8d-4862-865a-38081f5a6aeb
 	export CO_CPUS=16
 	export CO_MEMORY=65498251264
 
@@ -309,15 +307,15 @@ process capsule_aind_ephys_spikesort_kilosort_25_7 {
 	mkdir -p capsule/scratch && ln -s \$PWD/capsule/scratch /scratch
 
 	echo "[${task.tag}] cloning git repo..."
-	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-2633671.git" capsule-repo
-	git -C capsule-repo checkout c7b2d11ea0c258a0d07c28c105d365553ccfaf43 --quiet
+	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-1515622.git" capsule-repo
+	git -C capsule-repo checkout 6f4ea112127d1727ba81040cf1563bcf9a40ca7d --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
 	echo "[${task.tag}] running capsule..."
 	cd capsule/code
 	chmod +x run
-	./run ${params.capsule_aind_ephys_spikesort_kilosort_25_7_args}
+	./run ${params.capsule_spikesort_spyking_circus_2_ecephys_7_args}
 
 	echo "[${task.tag}] completed!"
 	"""
@@ -380,7 +378,7 @@ process capsule_aind_ephys_results_collector_9 {
 	input:
 	path 'capsule/data/' from capsule_aind_ephys_job_dispatch_4_to_capsule_aind_ephys_results_collector_9_18.collect()
 	path 'capsule/data/' from capsule_aind_ephys_preprocessing_1_to_capsule_aind_ephys_results_collector_9_19.collect()
-	path 'capsule/data/' from capsule_aind_ephys_spikesort_kilosort_25_7_to_capsule_aind_ephys_results_collector_9_20.collect()
+	path 'capsule/data/' from capsule_spikesort_spyking_circus_2_ecephys_7_to_capsule_aind_ephys_results_collector_9_20.collect()
 	path 'capsule/data/' from capsule_aind_ephys_postprocessing_5_to_capsule_aind_ephys_results_collector_9_21.collect()
 	path 'capsule/data/' from capsule_aind_ephys_curation_2_to_capsule_aind_ephys_results_collector_9_22.collect()
 	path 'capsule/data/' from capsule_aind_ephys_unit_classifier_8_to_capsule_aind_ephys_results_collector_9_23.collect()
@@ -498,7 +496,7 @@ process capsule_nwb_packaging_units_11 {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://\$GIT_ACCESS_TOKEN@\$GIT_HOST/capsule-7106853.git" capsule-repo
-	git -C capsule-repo checkout 53dba6d99c4d7bd24b1106d2cf02cc3712b8082e --quiet
+	git -C capsule-repo checkout b532ec8dc7d1dc8751bb4de80941772465aaecd9 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
