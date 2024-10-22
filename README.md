@@ -145,6 +145,8 @@ The following global parameters can be passed to the pipeline:
 --sorter {kilosort25,kilosort4,spykingcircus2}
 ```
 
+## Process-specific parameters
+
 Some steps of the pipeline accept additional parameters, that can be passed as follows:
 
 ```bash
@@ -345,7 +347,7 @@ NXF_VER=22.10.8 DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow \
     -log $RESULTS_PATH/nextflow/nextflow.log \
     run $PIPELINE_PATH/pipeline/main_slurm.nf \
     -work-dir $WORKDIR \
-    --preprocessing_args "--debug --debug-duration 120" \ # additional parameters
+    --job_dispatch_args "--debug --debug-duration 120" \ # additional parameters
     -resume
 ```
 
