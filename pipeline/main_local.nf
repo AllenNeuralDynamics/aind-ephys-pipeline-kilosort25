@@ -138,7 +138,7 @@ process job_dispatch {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch.git" capsule-repo
-	git -C capsule-repo checkout e2115cb9a4c03df5c7c3b186ed372fb44369cb08 --quiet
+	git -C capsule-repo checkout d6bdb9cc02d6711790a5c406cd50c1434074b5e2 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
@@ -477,7 +477,7 @@ process visualization {
 
 	echo "[${task.tag}] cloning git repo..."
 	git clone "https://github.com/AllenNeuralDynamics/aind-ephys-visualization.git" capsule-repo
-	git -C capsule-repo checkout 4279f309927a1e3ad3df3a4142e45ae59644785a --quiet
+	git -C capsule-repo checkout 8b8fc1f4db2ffbb2bab3bbd87d6eb4cd1da761c6 --quiet
 	mv capsule-repo/code capsule/code
 	rm -rf capsule-repo
 
