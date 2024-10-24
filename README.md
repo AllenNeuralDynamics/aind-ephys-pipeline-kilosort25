@@ -240,7 +240,8 @@ The steps that accept additional arguments are:
 
 ## Local
 
-> :warning: While the pipeline can be deployed locally on a workstation or a server, it is recommended to 
+> [!WARNING]
+> While the pipeline can be deployed locally on a workstation or a server, it is recommended to 
 > deploy it on a SLURM cluster or on a batch processing system (e.g., AWS batch).
 > When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) 
 > are not parallelized to avoid overloading the system.
@@ -351,7 +352,9 @@ NXF_VER=22.10.8 DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow \
     -resume
 ```
 
-You should change the `--partition` parameter to match the partition you want to use on your cluster and point to the correct paths and parameters.
+> [!IMPORTANT]
+> You should change the `--partition` parameter to match the partition you want to use on your cluster. 
+> The same partition should be also indicated as the `queue` argument in the `pipeline/nextflow_slurm.config` file!
 
 Then, you can submit the script to the cluster with:
 
