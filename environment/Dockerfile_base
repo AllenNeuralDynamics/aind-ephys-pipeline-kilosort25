@@ -24,25 +24,12 @@ RUN apt-get install -y fonts-freefont-ttf
 RUN pip install --no-cache-dir torch==2.2.0
 
 RUN pip install --no-cache-dir \
-    aind-data-schema==0.38.0 \
+    aind-data-schema==1.1.0 \
+    backports-datetime-fromisoformat==2.0.2 \
     pyvips==2.2.1 \
-    wavpack-numcodecs==0.1.5 \
+    wavpack-numcodecs==0.2.1 \
     pynwb==2.8.0 \
     hdmf-zarr==0.8.0 \
-    spikeinterface[full,widgets]==0.100.7
+    spikeinterface[full,widgets]==0.101.2
 
-RUN pip install --no-cache-dir --no-deps aind-metadata-upgrader==0.0.8
-
-# NEO installation from source with a SpikeGLX fix
-RUN pip uninstall -y neo && \
-    git clone https://github.com/alejoe91/python-neo.git &&  \
-    cd python-neo && git checkout cf543aa7b85124193a8d1cf726a92de54b360026  && \
-    pip install --no-cache-dir . && \
-    cd ..
-
-# SpikeInterface installation from source with an NWB fix (#3059)
-RUN pip uninstall -y spikeinterface && \
-    git clone https://github.com/alejoe91/spikeinterface.git &&  \
-    cd spikeinterface && git checkout bed769214302a6ea10c44164f79edb5eaaf55f33  && \
-    pip install --no-cache-dir . && \
-    cd ..
+RUN pip install --no-cache-dir --no-deps aind-metadata-upgrader==0.0.22

@@ -1,32 +1,36 @@
-# AIND Ephys Pipeline with Kilosort2.5
-## aind-ephys-pipeline-kilosort25
+# AIND Ephys Pipeline
+## aind-ephys-pipeline
 
-Electrophysiology analysis pipeline using [Kilosort2.5](https://github.com/MouseLand/Kilosort/tree/v2.5) via [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
+Electrophysiology analysis pipeline with [SpikeInterface](https://github.com/SpikeInterface/spikeinterface).
 
 The pipeline is based on [Nextflow](https://www.nextflow.io/) and it includes the following steps:
 
 - [job-dispatch](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/): generates a list of JSON files to be processed in parallel. Parallelization is performed over multiple probes and multiple shanks (e.g., for NP2-4shank probes). The steps from `preprocessing` to `visualization` are run in parallel.
 - [preprocessing](https://github.com/AllenNeuralDynamics/aind-ephys-preprocessing/): phase_shift, highpass filter, denoising (bad channel removal + common median reference ("cmr") or highpass spatial filter - "destripe"), and motion estimation (optionally correction)
-- [spike sorting](https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort25/): with Kilosort2.5
+- spike sorting: several spike sorters are available:
+  - [kilosort2.5](https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort25/)
+  - [kilosort4](https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-kilosort4/)
+  - [spykingcircus2](https://github.com/AllenNeuralDynamics/aind-ephys-spikesort-spykingcircus2/)
 - [postprocessing](https://github.com/AllenNeuralDynamics/aind-ephys-postprocessing/): remove duplicate units, compute amplitudes, spike/unit locations, PCA, correlograms, template similarity, template metrics, and quality metrics
 - [curation](https://github.com/AllenNeuralDynamics/aind-ephys-curation/): based on ISI violation ratio, presence ratio, and amplitude cutoff
 - [unit classification](https://github.com/AllenNeuralDynamics/aind-ephys-unit-classification/): based on pre-trained classifier (noise, MUA, SUA)
 - [visualization](https://github.com/AllenNeuralDynamics/aind-ephys-visualization/): timeseries, drift maps, and sorting output in [figurl](https://github.com/flatironinstitute/figurl/blob/main/README.md)
 - [result collection](https://github.com/AllenNeuralDynamics/aind-ephys-result-collector/): this step collects the output of all parallel jobs and copies the output folders to the results folder
 - export to NWB: creates NWB output files. Each file can contain multiple streams (e.g., probes), but only a continuous chunk of data (such as an Open Ephys experiment+recording or an NWB `ElectricalSeries`). This step includes additional sub-steps:
-  - [session and subject](https://github.com/AllenNeuralDynamics/NWB_Packaging_Subject_Capsule)
-  - [units](https://github.com/AllenNeuralDynamics/NWB_Packaging_Units)
+  - [session and subject](https://github.com/AllenNeuralDynamics/aind-subject-nwb)
+  - [ecephys](https://github.com/AllenNeuralDynamics/aind-ecephys-nwb)
+  - [units](https://github.com/AllenNeuralDynamics/aind-units-nwb)
 
-Each step is run in a container and can be deployed on several platforms. 
-See the [Local deplyment](#local-deployment) and [SLURM deployment](#slurm-deployment) sections for more details.
+Each step is run in a container and can be deployed on several platforms. See [Deployments](#deployments) for more details.
 
 # Input
 
 Currently, the pipeline supports the following input data types:
 
-- `aind`: data ingestion used at AIND. The input folder must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
 - `spikeglx`: the input folder should be a SpikeGLX folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
-- (WIP) `nwb`: the input folder should contain a single NWB file (both HDF5 and Zarr backend are supported).
+- `openephys`: the input folder should be an Open Ephys folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
+- `nwb`: the input folder should contain a single NWB file (both HDF5 and Zarr backend are supported).
+- `aind`: data ingestion used at AIND. The input folder must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
 
 For more information on how to select the input mode and set additional parameters,
 see the [Local deployment - Additional parameters](#additional-parameters) section.
@@ -42,8 +46,7 @@ The output includes the following files and folders:
 
 **`preprocessed`**
 
-This folder contains the output of preprocessing, including preprocessed JSON files associated to each stream and 
-motion folders containing the estimated motion.
+This folder contains the output of preprocessing, including preprocessed JSON files associated to each stream and motion folders containing the estimated motion.
 The preprocessed JSON files can be used to re-instantiate the recordings, provided that the raw data folder is 
 mapped to the same location as the input of the pipeline.
 
@@ -76,20 +79,20 @@ sorting_raw = si.load_extractor("path-to-spikesorted-folder")
 
 **`postprocessed`**
 
-This folder contains the output of the post-processing for each stream. It can be loaded as a 
-`spikeinterface.WaveformExtractor` with:
+This folder contains the output of the post-processing in zarr format for each stream. It can be loaded as a 
+`spikeinterface.SortingAnalyzer` with:
 ```python
 import spikeinterface as si
 
-waveform_extractor = si.load_waveforms("path-to-postprocessed-folder", with_recording=False)
+sorting_analyzer = si.load_sorting_analyzer("path-to-postprocessed-folder.zarr", with_recording=False)
 ```
 
-The `waveform_extractor` includes many computed extensions. This example shows how to load some of them:
+The `sorting_analyzer` includes many computed extensions. This example shows how to load some of them:
 ```python
-unit_locations = we.load_extension("unit_locations").get_data()
+unit_locations = sorting_analyzer.get_extension("unit_locations").get_data()
 # unit_locations is a np.array with the estimated locations
 
-qm = we.load_extension("quality_metrics").get_data()
+qm = sorting_analyzer.get_extension("quality_metrics").get_data()
 # qm is a pandas.DataFrame with the computed quality metrics
 ```
 
@@ -113,7 +116,7 @@ The `sorting_curated` object contains the following curation properties (which c
 
 **`nwb`**
 
-This folder contains the generated NWB files.
+This folder contains the generated NWB files. One NWB file is generated for each block (i.e, Open Ephys experiment) and segment (i.e, Open Ephys recording). The NWB file includes all streams (probes) that are part of the block/segment, with session/subject information, ecephys metadata (electrodes, electrode groups), LFP signals, and Units.
 
 **`visualization_output.json`**
 
@@ -131,6 +134,19 @@ All files generated by Nextflow are saved here
 
 # Parameters
 
+## Global parameters
+
+In Nextflow, the The `-resume` argument enables the caching mechanism.
+
+The following global parameters can be passed to the pipeline:
+
+```bash
+--n_jobs N_JOBS (for local deployment, how many jobs to run in parallel)
+--sorter {kilosort25,kilosort4,spykingcircus2}
+```
+
+## Process-specific parameters
+
 Some steps of the pipeline accept additional parameters, that can be passed as follows:
 
 ```bash
@@ -142,21 +158,27 @@ The steps that accept additional arguments are:
 ### `job_dispatch_args`:
 
 ```bash
-  --concatenate         Whether to concatenate recordings (segments) or not. Default: False
+  ---concatenate        Whether to concatenate recordings (segments) or not. Default: False
+  --split-groups        Whether to process different groups separately
+  --debug               Whether to run in DEBUG mode
+  --debug-duration DEBUG_DURATION
+                        Duration of clipped recording in debug mode. Default is 30 seconds. Only used if debug is enabled
   --input {aind,spikeglx,nwb}
-                        Which 'loader' to use. Default 'aind'
+                        Which 'loader' to use (aind | spikeglx | nwb)
 ```
 
-- `aind`: data ingestion used at AIND. The `DATA_PATH` must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
 - `spikeglx`: the `DATA_PATH` should contain a SpikeGLX saved folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
-- (WIP) `nwb`: the `DATA_PATH` should contain an NWB file (both HDF5 and Zarr backend are supported).
+- `openephys`: the `DATA_PATH` should contain an Open Ephys folder. It is recommended to add a `subject.json` and a `data_description.json` following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) specification, since these metadata are propagated to the NWB files.
+- `nwb`: the `DATA_PATH` should contain an NWB file (both HDF5 and Zarr backend are supported).
+- `aind`: data ingestion used at AIND. The `DATA_PATH` must contain an `ecephys` subfolder which in turn includes an `ecephys_clipped` (clipped Open Ephys folder) and an `ecephys_compressed` (compressed traces with Zarr). In addition, JSON file following the [aind-data-schema](https://aind-data-schema.readthedocs.io/en/latest/) are parsed to create processing and NWB metadata.
 
 ### `preprocessing_args`:
 
 ```bash
-  --debug               Whether to run in DEBUG mode
   --denoising {cmr,destripe}
-                        Which denoising strategy to use. Can be 'cmr' or 'destripe'. Default 'cmr'
+                        Which denoising strategy to use. Can be 'cmr' or 'destripe'
+  --filter-type {highpass,bandpass}
+                        Which filter to use. Can be 'highpass' or 'bandpass'
   --no-remove-out-channels
                         Whether to remove out channels
   --no-remove-bad-channels
@@ -164,11 +186,30 @@ The steps that accept additional arguments are:
   --max-bad-channel-fraction MAX_BAD_CHANNEL_FRACTION
                         Maximum fraction of bad channels to remove. If more than this fraction, processing is skipped
   --motion {skip,compute,apply}
-                        How to deal with motion correction. Can be 'skip', 'compute', or 'apply'. Default 'compute'
-  --motion-preset {nonrigid_accurate,kilosort_like,nonrigid_fast_and_accurate}
-                        What motion preset to use. Can be 'nonrigid_accurate', 'kilosort_like', or 'nonrigid_fast_and_accurate'. Default "nonrigid_fast_and_accurate"
-  --debug-duration DEBUG_DURATION
-                        Duration of clipped recording in debug mode. Default is 30 seconds. Only used if debug is enabled
+                        How to deal with motion correction. Can be 'skip', 'compute', or 'apply'
+  --motion-preset {dredge,dredge_fast,nonrigid_accurate,nonrigid_fast_and_accurate,rigid_fast,kilosort_like}
+                        What motion preset to use. Supported presets are:
+                        dredge, dredge_fast, nonrigid_accurate, nonrigid_fast_and_accurate, rigid_fast, kilosort_like.
+  --t-start T_START     Start time of the recording in seconds (assumes recording starts at 0). 
+                        This parameter is ignored in case of multi-segment or multi-block recordings.
+                        Default is None (start of recording)
+  --t-stop T_STOP       Stop time of the recording in seconds (assumes recording starts at 0). 
+                        This parameter is ignored in case of multi-segment or multi-block recordings.
+                        Default is None (end of recording)
+
+```
+
+### `spikesort_args`:
+
+```bash
+  --raise-if-fails      Whether to raise an error in case of failure or continue. Default True (raise)
+  --apply-motion-correction
+                        Whether to apply the sorter-specific motion correction. Default: True
+  --min-drift-channels MIN_DRIFT_CHANNELS
+                        Minimum number of channels to enable motion correction. Default is 96.
+  --clear-cache         (only for Kilosort4) Force pytorch to free up memory reserved for its cache in between 
+                        memory-intensive operations. Note that setting `clear_cache=True` is NOT recommended unless you
+                        encounter GPU out-of-memory errors, since this can result in slower sorting.
 ```
 
 
@@ -180,14 +221,33 @@ The steps that accept additional arguments are:
 
 ```
 
+### `nwb_ecephys_args`
 
-In Nextflow, the The `-resume` argument enables the caching mechanism.
+```bash
+  --skip-lfp            Whether to write LFP electrical series
+  --write-raw           Whether to write RAW electrical series
+  --lfp_temporal_factor LFP_TEMPORAL_FACTOR
+                        Ratio of input samples to output samples in time. Use 0 or 1 to keep all samples. Default is 2.
+  --lfp_spatial_factor LFP_SPATIAL_FACTOR
+                        Controls number of channels to skip in spatial subsampling. Use 0 or 1 to keep all channels. Default is 4.
+  --lfp_highpass_freq_min LFP_HIGHPASS_FREQ_MIN
+                        Cutoff frequency for highpass filter to apply to the LFP recorsings. Default is 0.1 Hz. Use 0 to skip filtering.
+
+```
 
 
-# Local deployment
+# Deployments
 
+## Local
 
-## Requirements
+> [!WARNING]
+> While the pipeline can be deployed locally on a workstation or a server, it is recommended to 
+> deploy it on a SLURM cluster or on a batch processing system (e.g., AWS batch).
+> When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) 
+> are not parallelized to avoid overloading the system.
+> This is achieved by setting the `maxForks 1` directive in such processes.
+
+### Requirements
 
 To deploy locally, you need to install:
 
@@ -215,7 +275,7 @@ If you plan to use this service extensively, it is recommended to
 [create your own kachery zone](https://github.com/flatironinstitute/kachery-cloud/blob/main/doc/create_kachery_zone.md).
 
 
-## Run
+### Run
 
 Clone this repo (`git clone https://github.com/AllenNeuralDynamics/aind-ephys-pipeline-kilosort25.git`) and go to the 
 `pipeline` folder. You will find a `main_local.nf`. This nextflow script is accompanied by the 
@@ -225,8 +285,8 @@ To invoke the pipeline you can run the following command:
 
 ```bash
 NXF_VER=22.10.8 DATA_PATH=$PWD/../data RESULTS_PATH=$PWD/../results \
-    nextflow -C nextflow_local.config run main_local.nf \
-    -log $RESULTS_PATH/nextflow/nextflow.log \
+    nextflow -C nextflow_local.config -log $RESULTS_PATH/nextflow/nextflow.log \
+    run main_local.nf \
     --n_jobs 8 -resume
 ```
 
@@ -237,7 +297,7 @@ The `--n_jobs` argument specifies the number of parallel jobs to run.
 Additional parameters can be passed as described in the [Parameters](#parameters) section.
 
 
-## Example run command
+### Example run command
 
 As an example, here is how to run the pipeline on a SpikeGLX dataset in debug mode 
 on a 120-second snippet of the recording with 16 jobs:
@@ -248,14 +308,8 @@ NXF_VER=22.10.8 DATA_PATH=path/to/data_spikeglx RESULTS_PATH=path/to/results_spi
     --job_dispatch_args "--input spikeglx" --preprocessing_args "--debug --debug-duration 120"
 ```
 
-## Caveats of local deployment
 
-While the pipeline can be deployed locally on a workstation or a server, it is recommended to to deploy it on a cluster or on a batch processing system (e.g., AWS batch).
-When deploying locally, the most recource-intensive processes (preprocessing, spike sorting, postprocessing) are not parallelized to avoid overloading the system.
-This is achieved by setting the `maxForks 1` directive in such processes.
-
-
-# SLURM deployment
+## SLURM
 
 To deploy on a SLURM cluster, you need to have access to a SLURM cluster and have the 
 [Nextflow](https://www.nextflow.io/docs/latest/install.html) and Singularity/Apptainer installed. 
@@ -294,11 +348,13 @@ NXF_VER=22.10.8 DATA_PATH=$DATA_PATH RESULTS_PATH=$RESULTS_PATH nextflow \
     -log $RESULTS_PATH/nextflow/nextflow.log \
     run $PIPELINE_PATH/pipeline/main_slurm.nf \
     -work-dir $WORKDIR \
-    --preprocessing_args "--debug --debug-duration 120" \ # additional parameters
+    --job_dispatch_args "--debug --debug-duration 120" \ # additional parameters
     -resume
 ```
 
-You should change the `--partition` parameter to match the partition you want to use on your cluster and point to the correct paths and parameters.
+> [!IMPORTANT]
+> You should change the `--partition` parameter to match the partition you want to use on your cluster. 
+> The same partition should be also indicated as the `queue` argument in the `pipeline/nextflow_slurm.config` file!
 
 Then, you can submit the script to the cluster with:
 
@@ -306,13 +362,25 @@ Then, you can submit the script to the cluster with:
 sbatch slurm_submit.sh
 ```
 
-
-# Create a custom layer for data ingestion
+## Creating a custom layer for data ingestion
 
 The default job-dispatch step only supports loading data 
-from AIND folders, SpikeGLX folders, and NWB files.
+from SpikeGLX, Open Ephys, NWB, and AIND formats.
 
 To ingest other types of data, you can create a similar repo and modify the way that the job list is created 
 (see the [job dispatch README](https://github.com/AllenNeuralDynamics/aind-ephys-job-dispatch/blob/main/README.md) for more details).
 
-Then you can create a modified `main_local-slurm.nf` `job_dispatch` process to point to your custom job dispatch repo.
+Then you can create a modified `main_local-slurm.nf`, where the `job_dispatch` process points to your custom job dispatch repo.
+
+## Code Ocean (AIND)
+
+At AIND, the pipeline is deployed on the Code Ocean platform. Since currently Code Ocean does not support 
+conditional processes, pipelines running different sorters and AIND-specific options are implemented in separate
+branches. This is a list of the available pipeline branches that are deployed in Code Ocean:
+
+- `co_kilosort25`: pipeline with Kilosort2.5 sorter
+- `co_kilosort4`: pipeline with Kilosort4 sorter
+- `co_spykingcircus2`: pipeline with Spyking Circus 2 sorter
+- `co_kilosort25_opto`: pipeline with Kilosort2.5 sorter and optogenetics artifact removal
+- `co_kilosort4_opto`: pipeline with Kilosort4 sorter and optogenetics artifact removal
+- `co_spykingcircus2_opto`: pipeline with Spyking Circus 2 sorter and optogenetics artifact removal
